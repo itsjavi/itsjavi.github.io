@@ -1,3 +1,3 @@
 Personal website.
 
-© Javier Aguilar, All rights reserved.
+2018 © Javier Aguilar, All rights reserved.
