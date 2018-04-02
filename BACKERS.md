@@ -7,7 +7,7 @@ entirely thanks to the support of these awesome backers.
 If you'd like to join them and **be featured in the websites of the most popular projects**, please consider:
 
 - [❤️ Become a backer or sponsor on Patreon](https://www.patreon.com/bePatron?c=1647889).
-- [🎁 One-time donation via PayPal](https://www.paypal.me/metaunicorn?locale.x=en_US).
+- [🎁 One-time donation via PayPal](https://www.paypal.com/pools/c/83dpr34ivs/send).
 
 
 A big thank you to all backers, sponsors and one-time donors! 🙏 , your support makes it easier for me to bring 
