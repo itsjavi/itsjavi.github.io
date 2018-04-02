@@ -1,4 +1,4 @@
-# Sponsors & Backers
+<h1 align="center">Sponsors & Backers</h1>
 
 The ongoing development of all open source projects by [Javi Aguilar](https://github.com/itsjavi) like
  [Farbelous](https://github.com/farbelous) and [Capsule Monsters](https://github.com/capsulemonsters) is possible 
