@@ -1,6 +1,6 @@
 <h1 align="center">Sponsors & Backers</h1>
 
-The ongoing development of all open source projects by [Javi Aguilar](https://github.com/itsjavi/repositories), including all projects in [Farbelous](https://github.com/farbelous) and [CapsuleMonsters](https://github.com/capsulemonsters) is possible entirely thanks to the support of these awesome backers.
+The ongoing development of all open source projects by [Javi Aguilar](https://github.com/itsjavi/repositories) like **bootstrap-colorpicker** and **fontawesome-iconpicker**, including all projects in [Farbelous](https://github.com/farbelous) and [CapsuleMonsters](https://github.com/capsulemonsters) is possible entirely thanks to the support of these awesome backers.
 
 If you'd like to join them and **be featured in the websites of the most popular projects***, please consider:
 
