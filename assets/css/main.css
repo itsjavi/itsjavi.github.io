@@ -484,6 +484,17 @@ ul.alt li:first-child {
     padding-top: 0;
 }
 
+ul.icons-alt {
+    cursor: default;
+    list-style: none;
+    padding-left: 0;
+    margin-top: -0.675em;
+}
+
+ul.icons-alt li {
+    padding: 0.675em 0.5em;
+}
+
 ul.icons {
     cursor: default;
     list-style: none;
