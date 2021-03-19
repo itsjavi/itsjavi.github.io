@@ -492,6 +492,8 @@ ul.icons-alt {
 }
 
 ul.icons-alt li {
+    display: inline-block;
+    font-size: 1.4em;
     padding: 0.675em 0.5em;
 }
 
@@ -837,3 +839,5 @@ body.is-loading #main {
 body.is-ie #wrapper {
     height: 100%;
 }
+
+
