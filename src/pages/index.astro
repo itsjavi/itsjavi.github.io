@@ -2,11 +2,11 @@
 import { getCollection } from "astro:content";
 import { FlaskConical, Rocket } from "lucide-astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
-import { IS_BLOG_ENABLED } from "../config";
 import experiments from "../data/experiments.json";
 import projects from "../data/projects.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import createSlug from "../lib/createSlug";
+import { IS_BLOG_ENABLED } from "../config";
 
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
@@ -14,7 +14,9 @@ const last_posts = posts.slice(0, 3);
 const last_projects = projects.slice(0, 3);
 const last_experiments = experiments.slice(0, 3);
 
-const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED
+const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED;
+const hasMoreProjects = projects.length > last_projects.length;
+const hasMoreExperiments = experiments.length > last_experiments.length;
 ---
 
 <BaseLayout sideBarActiveItemID="home">
@@ -74,15 +76,20 @@ const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED
       <>
         <HorizontalCard
           title={project.title}
-        img={project.img}
-        desc={project.desc}
-        url={project.url}
-        badge={project.badge}
-      />
-     {index < projects.length - 1 && <div class="divider my-0"></div>}
-    </>
+          img={project.img}
+          desc={project.desc}
+          url={project.url}
+          badge={project.badge}
+        />
+        {index < last_projects.length - 1 && <div class="divider my-0"></div>}
+      </>
     ))
   }
+  {hasMoreProjects && (
+    <div class="text-center mt-5">
+      <a href="/projects" class="btn btn-outline btn-primary">View more projects</a>
+    </div>
+  )}
 
   <div>
     <div class="text-3xl w-full font-bold mb-2 mt-10">Latest experiments <FlaskConical class="inline-block" /></div>
@@ -97,8 +104,13 @@ const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED
           desc={experiment.desc}
           url={experiment.url}
         />
-        {index < experiments.length - 1 && <div class="divider my-0"></div>}
+        {index < last_experiments.length - 1 && <div class="divider my-0"></div>}
       </>
     ))
   }
+  {hasMoreExperiments && (
+    <div class="text-center mt-5">
+      <a href="/experiments" class="btn btn-outline btn-primary">View more experiments</a>
+    </div>
+  )}
 </BaseLayout>
