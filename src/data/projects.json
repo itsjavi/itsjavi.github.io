@@ -1,7 +1,8 @@
 [
   {
     "title": "CSS Logo",
-    "desc": "A redesigned CSS Logo, chosen by the community and the CSS-Next community group, a part of the W3C. The design includes many hat tips to CSS like rounded corners, tooltips and color pickers.",
+    "desc": "A redesigned CSS Logo, proposed to the CSS-Next community group, a part of the W3C. The design includes many hat tips to CSS like rounded corners, tooltips and color pickers.",
+    "desc_alt": "A redesigned CSS Logo, chosen by the community and the CSS-Next community group, a part of the W3C. The design includes many hat tips to CSS like rounded corners, tooltips and color pickers.",
     "img": "/projects/csslogo.webp",
     "url": "https://codepen.io/itsjavi/pen/XWLwvxp",
     "badge": "Design"
