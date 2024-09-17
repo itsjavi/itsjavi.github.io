@@ -1,0 +1,22 @@
+# Ignore:
+build/
+dist/
+.astro
+.next
+.turbo
+node_modules
+.cache/
+coverage/
+pnpm-*.yaml
+.history/
+v8-compile-cache-*
+.pnpm-store
+.vercel/
+.ignore/
+.vscode/templates
+
+.local/
+public/
+.vscode/
+turbo.json
+version.json

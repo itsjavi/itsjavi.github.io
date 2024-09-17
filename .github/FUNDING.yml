@@ -2,4 +2,5 @@
 github: [itsjavi]
 ko_fi: itsjavi
 # buy_me_a_coffee: itsjavi
-custom: ['https://paypal.me/itsjavidotcom/5', 'https://paypal.me/itsjavidotcom/10']
+custom:
+  ["https://paypal.me/itsjavidotcom/5", "https://paypal.me/itsjavidotcom/10"]

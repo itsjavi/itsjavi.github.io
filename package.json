@@ -1,0 +1,39 @@
+{
+  "name": "itsjavi-astro",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "astro": "astro",
+    "build": "astro check && astro build",
+    "dev": "astro dev --open",
+    "format": "pnpm lint:fix",
+    "lint": "pnpm typecheck && astro check",
+    "lint:fix": "astro check --fix && prettier --write .",
+    "prepare": "sort-package-json",
+    "preview": "pnpm build && astro preview",
+    "start": "pnpm dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.3",
+    "@astrojs/mdx": "^3.1.6",
+    "@astrojs/rss": "^4.0.7",
+    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.15.6",
+    "daisyui": "^4.12.10",
+    "dayjs": "^1.11.13",
+    "lucide-astro": "^0.441.0",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.11",
+    "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "sort-package-json": "^2.10.1"
+  },
+  "packageManager": "pnpm@9.10.0",
+  "engines": {
+    "node": ">=20.5.0"
+  }
+}

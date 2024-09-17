@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import { FlaskConical, Rocket } from "lucide-astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+import { IS_BLOG_ENABLED } from "../config";
+import experiments from "../data/experiments.json";
+import projects from "../data/projects.json";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import createSlug from "../lib/createSlug";
+
+const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const last_posts = posts.slice(0, 3);
+const last_projects = projects.slice(0, 3);
+const last_experiments = experiments.slice(0, 3);
+
+const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED
+---
+
+<BaseLayout sideBarActiveItemID="home">
+  <div class="pb-12 mt-5">
+    <div class="text-xl py-1">Hi there! 👋</div>
+    <div class="text-5xl font-bold">I'm Javi Aguilar</div>
+    <div class="text-3xl py-3 font-bold">Full-Stack Software Engineer</div>
+    <div class="py-2 text-lg">
+        📍 Berlin. Passionate about web technologies and crafting good user experiences. 
+        I help teams launch successful products while experimenting and driving innovation through 
+        many side projects.
+    </div>
+    <div class="py-2 text-lg flex flex-wrap gap-2">
+        <span class="badge badge-outline">Next.js</span>
+        <span class="badge badge-outline">React</span>
+        <span class="badge badge-outline">TypeScript</span>
+        <span class="badge badge-outline">JavaScript</span>
+        <span class="badge badge-outline">CSS</span>
+        <span class="badge badge-outline">PHP</span>
+        <span class="badge badge-outline">Symfony</span>
+        <span class="badge badge-outline">AWS</span>
+        <span class="badge badge-outline">DBs</span>
+    </div>
+  </div>
+
+  {
+    hasBlogPosts && (
+      <>
+        <div>
+          <div class="text-3xl w-full font-bold mb-2">Recent posts</div>
+      </div>
+      {
+    last_posts.map((post) => (
+      <>
+        <HorizontalCard
+          title={post.data.title}
+          img={post.data.heroImage}
+          desc={post.data.description}
+          url={"/blog/" + createSlug(post.data.title, post.slug)}
+          target="_self"
+          badge={post.data.badge}
+        />
+        <div class="divider my-0" />
+      </>
+    ))}
+      </>
+      
+      )
+}
+
+  <div>
+    <div class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}>Latest projects <Rocket class="inline-block" /></div>
+  </div>
+
+  {
+    last_projects.map((project, index) => (
+      <>
+        <HorizontalCard
+          title={project.title}
+        img={project.img}
+        desc={project.desc}
+        url={project.url}
+        badge={project.badge}
+      />
+     {index < projects.length - 1 && <div class="divider my-0"></div>}
+    </>
+    ))
+  }
+
+  <div>
+    <div class="text-3xl w-full font-bold mb-2 mt-10">Latest experiments <FlaskConical class="inline-block" /></div>
+  </div>
+
+  {
+    last_experiments.map((experiment, index) => (
+      <>
+        <HorizontalCard
+          title={experiment.title}
+          img={experiment.img}
+          desc={experiment.desc}
+          url={experiment.url}
+        />
+        {index < experiments.length - 1 && <div class="divider my-0"></div>}
+      </>
+    ))
+  }
+</BaseLayout>
