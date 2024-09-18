@@ -1,20 +1,38 @@
 ---
+import NoTransitionsLayout from "@layouts/NoTransitionsLayout.astro";
 import LiveEditor from "../components/LiveEditor.astro";
+
+const title = "Live Code Editor for HTML/CSS/JS";
+const description = "A live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Live Code Editor for HTML/CSS/JS</title>
-  </head>
-  <body class="h-screen">
+<NoTransitionsLayout
+  title={title}
+  description={description}
+  sideBarActiveItemID="editor"
+>
+  <main class="p-6 pt-10">
+    <div class="mb-10">
+      <h1 class="text-3xl w-full font-bold mb-5">Live Code Editor</h1>
+      <div class="divider my-2"></div>
+      <p>
+        {description}. It uses CodeMirror under the hood.
+      </p>
+    </div>
     <LiveEditor
+      class="h-[500px]"
       initialHtml="<h1>Hello, World!</h1>"
       initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }"
       initialJs="console.log('Hello from the code editor!');"
     />
-  </body>
-</html>
+    <br />
+    <a
+      class="btn btn-neutral"
+      href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Get this editor
+    </a>
+  </main>
+</NoTransitionsLayout>

@@ -1,15 +1,28 @@
 ---
 interface Props {
+  class?: string;
   initialHtml?: string;
   initialCss?: string;
   initialJs?: string;
 }
 
-const { initialHtml = "", initialCss = "", initialJs = "" } = Astro.props;
+const {
+  initialHtml = "",
+  initialCss = "",
+  initialJs = "",
+  class: className = "",
+} = Astro.props;
+
+// Important! This component is not compatible with Astro's view transitions:
+// when navigating to this page after a view transition, the editor will not be initialized.
 ---
 
-<div class="live-editor grid grid-rows-5 h-full border border-gray-700">
-  <div class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700">
+<div
+  class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
+>
+  <div
+    class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700"
+  >
     <div class="flex bg-neutral-700">
       <button class="tab active" data-target="html">HTML</button>
       <button class="tab" data-target="css">CSS</button>
@@ -20,7 +33,9 @@ const { initialHtml = "", initialCss = "", initialJs = "" } = Astro.props;
     <div id="js-editor" class="editor hidden">{initialJs}</div>
   </div>
   <div class="row-span-3 flex flex-col bg-black">
-    <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">Preview</h3>
+    <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">
+      Preview
+    </h3>
     <iframe class="flex-1 border-none"></iframe>
   </div>
 </div>
@@ -33,6 +48,7 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { EditorView, basicSetup } from "codemirror";
 
   function setupEditor(editorContainer: Element) {
+    editorContainer.classList.remove("live-editor--static");
     const htmlEditorParent = editorContainer.querySelector("#html-editor")!;
     const initialHtml = htmlEditorParent.textContent || "";
     htmlEditorParent.textContent = "";
@@ -96,16 +112,18 @@ import { EditorView, basicSetup } from "codemirror";
     jsEditor.dom.addEventListener("keyup", updatePreview);
 
     // Tab switching logic
-    const tabs = editorContainer.querySelectorAll('.tab');
-    const editors = editorContainer.querySelectorAll('.editor');
+    const tabs = editorContainer.querySelectorAll(".tab");
+    const editors = editorContainer.querySelectorAll(".editor");
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const target = tab.getAttribute('data-target');
-        tabs.forEach(t => t.classList.remove('active'));
-        editors.forEach(e => e.classList.add('hidden'));
-        tab.classList.add('active');
-        editorContainer.querySelector(`#${target}-editor`)?.classList.remove('hidden');
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.getAttribute("data-target");
+        tabs.forEach((t) => t.classList.remove("active"));
+        editors.forEach((e) => e.classList.add("hidden"));
+        tab.classList.add("active");
+        editorContainer
+          .querySelector(`#${target}-editor`)
+          ?.classList.remove("hidden");
       });
     });
 
@@ -113,7 +131,11 @@ import { EditorView, basicSetup } from "codemirror";
     updatePreview();
   }
 
-  document.querySelectorAll(".live-editor").forEach(setupEditor);
+  const setupAllLiveEditors = function () {
+    document.querySelectorAll(".live-editor").forEach(setupEditor);
+  };
+
+  setupAllLiveEditors();
 </script>
 
 <style is:global>
@@ -139,5 +161,15 @@ import { EditorView, basicSetup } from "codemirror";
 
   .hidden {
     display: none;
+  }
+
+  .live-editor--static {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .live-editor--static * {
+    cursor: not-allowed;
+    pointer-events: none;
   }
 </style>

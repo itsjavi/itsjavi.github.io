@@ -1,6 +1,7 @@
 ---
 const { sideBarActiveItemID } = Astro.props;
 const activeClass = "bg-base-300"; // For primary color replace with `active` class
+import { CodeSquare } from "lucide-astro";
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
@@ -8,6 +9,7 @@ const activeClass = "bg-base-300"; // For primary color replace with `active` cl
     <li hidden><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
     <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
     <li><a class="py-3 text-base" id="experiments" href="/experiments">Experiments</a></li>
+    <li><a class="py-3 text-base" id="editor" href="/editor"><CodeSquare /> Editor</a></li>
     <li hidden><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
     <li>
         <a
