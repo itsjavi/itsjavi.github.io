@@ -4,6 +4,7 @@ interface Props {
   initialHtml?: string;
   initialCss?: string;
   initialJs?: string;
+  localStorageKey?: string;
 }
 
 const {
@@ -11,6 +12,7 @@ const {
   initialCss = "",
   initialJs = "",
   class: className = "",
+  localStorageKey,
 } = Astro.props;
 
 // Important! This component is not compatible with Astro's view transitions:
@@ -19,6 +21,7 @@ const {
 
 <div
   class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
+  data-storage-key={localStorageKey}
 >
   <div
     class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700 max-w-full"
@@ -44,78 +47,101 @@ const {
   import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
+import type { Extension } from "@codemirror/state";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { EditorView, basicSetup } from "codemirror";
+import { debounce } from "lodash-es";
+
+  function createEditor(
+    editorContainer: Element,
+    selector: string,
+    langExtension: Extension,
+  ) {
+    const editorElement = editorContainer.querySelector(selector)!;
+    const initialCode = editorElement.textContent || "";
+    editorElement.textContent = "";
+
+    const codeEditor = new EditorView({
+      doc: initialCode,
+      extensions: [
+        basicSetup,
+        langExtension,
+        vscodeDark,
+        EditorView.lineWrapping,
+      ],
+      parent: editorElement,
+    });
+
+    return codeEditor;
+  }
 
   function setupEditor(editorContainer: Element) {
     editorContainer.classList.remove("live-editor--static");
-    const htmlEditorParent = editorContainer.querySelector("#html-editor")!;
-    const initialHtml = htmlEditorParent.textContent || "";
-    htmlEditorParent.textContent = "";
-    const htmlEditor = new EditorView({
-      doc: initialHtml,
-      extensions: [
-        basicSetup,
-        html({
-          autoCloseTags: true,
-          matchClosingTags: true,
-        }),
-        vscodeDark,
-        EditorView.lineWrapping,
-      ],
-      parent: htmlEditorParent,
-    });
-
-    const cssEditorParent = editorContainer.querySelector("#css-editor")!;
-    const initialCss = cssEditorParent.textContent || "";
-    cssEditorParent.textContent = "";
-    const cssEditor = new EditorView({
-      doc: initialCss,
-      extensions: [basicSetup, css(), vscodeDark, EditorView.lineWrapping],
-      parent: cssEditorParent,
-    });
-
-    const jsEditorParent = editorContainer.querySelector("#js-editor")!;
-    const initialJs = jsEditorParent.textContent || "";
-    jsEditorParent.textContent = "";
-    const jsEditor = new EditorView({
-      doc: initialJs,
-      extensions: [
-        basicSetup,
-        javascript(),
-        vscodeDark,
-        EditorView.lineWrapping,
-      ],
-      parent: jsEditorParent,
-    });
+    const htmlEditor = createEditor(
+      editorContainer,
+      "#html-editor",
+      html({
+        autoCloseTags: true,
+        matchClosingTags: true,
+      }),
+    );
+    const cssEditor = createEditor(editorContainer, "#css-editor", css());
+    const jsEditor = createEditor(editorContainer, "#js-editor", javascript());
 
     const preview = editorContainer.querySelector(
       "iframe",
     ) as HTMLIFrameElement;
+
+    const storageKey = editorContainer.getAttribute("data-storage-key");
+
+    // Load saved content from localStorage if storageKey is provided
+    if (storageKey) {
+      const savedContent = localStorage.getItem(storageKey);
+      if (savedContent) {
+        const { html, css, js } = JSON.parse(savedContent);
+        htmlEditor.dispatch({
+          changes: { from: 0, to: htmlEditor.state.doc.length, insert: html },
+        });
+        cssEditor.dispatch({
+          changes: { from: 0, to: cssEditor.state.doc.length, insert: css },
+        });
+        jsEditor.dispatch({
+          changes: { from: 0, to: jsEditor.state.doc.length, insert: js },
+        });
+      }
+    }
+
+    const saveToLocalStorage = storageKey
+      ? debounce(() => {
+          const content = {
+            html: htmlEditor.state.doc.toString(),
+            css: cssEditor.state.doc.toString(),
+            js: jsEditor.state.doc.toString(),
+          };
+          localStorage.setItem(storageKey, JSON.stringify(content));
+        }, 400)
+      : () => {};
 
     function updatePreview() {
       const htmlContent = htmlEditor.state.doc.toString();
       const cssContent = cssEditor.state.doc.toString();
       const jsContent = jsEditor.state.doc.toString();
 
-      const content = `
-        <html>
-          <head>
-            <style>${cssContent}</style>
-          </head>
-          <body>
-            ${htmlContent}
-            <script>${jsContent}<\/script>
-          </body>
-        </html>
-      `;
+      const content = `<html>
+        <head><style>${cssContent}</style></head>
+        <body>
+          ${htmlContent}
+          <script>${jsContent}<\/script>
+        </body>
+      </html>`;
 
-      preview.srcdoc = content;
+      preview.srcdoc = content.trim();
+      saveToLocalStorage();
     }
 
-    htmlEditor.dom.addEventListener("keyup", updatePreview);
-    cssEditor.dom.addEventListener("keyup", updatePreview);
-    jsEditor.dom.addEventListener("keyup", updatePreview);
+    htmlEditor.dom.addEventListener("keyup", debounce(updatePreview, 200));
+    cssEditor.dom.addEventListener("keyup", debounce(updatePreview, 200));
+    jsEditor.dom.addEventListener("keyup", debounce(updatePreview, 200));
 
     // Tab switching logic
     const tabs = editorContainer.querySelectorAll(".tab");
@@ -132,16 +158,10 @@ import { EditorView, basicSetup } from "codemirror";
           ?.classList.remove("hidden");
       });
     });
-
-    // Initial preview
     updatePreview();
   }
 
-  const setupAllLiveEditors = function () {
-    document.querySelectorAll(".live-editor").forEach(setupEditor);
-  };
-
-  setupAllLiveEditors();
+  document.querySelectorAll(".live-editor").forEach(setupEditor);
 </script>
 
 <style is:global>
@@ -166,17 +186,12 @@ import { EditorView, basicSetup } from "codemirror";
     @apply flex-1 max-h-full max-w-full overflow-auto;
   }
 
-  .hidden {
-    display: none;
-  }
-
   .live-editor--static {
     opacity: 0.3;
     cursor: not-allowed;
-  }
-
-  .live-editor--static * {
-    cursor: not-allowed;
-    pointer-events: none;
+    * {
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   }
 </style>
