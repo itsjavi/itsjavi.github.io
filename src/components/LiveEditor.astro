@@ -1,0 +1,143 @@
+---
+interface Props {
+  initialHtml?: string;
+  initialCss?: string;
+  initialJs?: string;
+}
+
+const { initialHtml = "", initialCss = "", initialJs = "" } = Astro.props;
+---
+
+<div class="live-editor grid grid-rows-5 h-full border border-gray-700">
+  <div class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700">
+    <div class="flex bg-neutral-700">
+      <button class="tab active" data-target="html">HTML</button>
+      <button class="tab" data-target="css">CSS</button>
+      <button class="tab" data-target="js">JavaScript</button>
+    </div>
+    <div id="html-editor" class="editor active">{initialHtml}</div>
+    <div id="css-editor" class="editor hidden">{initialCss}</div>
+    <div id="js-editor" class="editor hidden">{initialJs}</div>
+  </div>
+  <div class="row-span-3 flex flex-col bg-black">
+    <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">Preview</h3>
+    <iframe class="flex-1 border-none"></iframe>
+  </div>
+</div>
+
+<script>
+  import { css } from "@codemirror/lang-css";
+import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { EditorView, basicSetup } from "codemirror";
+
+  function setupEditor(editorContainer: Element) {
+    const htmlEditorParent = editorContainer.querySelector("#html-editor")!;
+    const initialHtml = htmlEditorParent.textContent || "";
+    htmlEditorParent.textContent = "";
+    const htmlEditor = new EditorView({
+      doc: initialHtml,
+      extensions: [
+        basicSetup,
+        html({
+          autoCloseTags: true,
+          matchClosingTags: true,
+        }),
+        vscodeDark,
+      ],
+      parent: htmlEditorParent,
+    });
+
+    const cssEditorParent = editorContainer.querySelector("#css-editor")!;
+    const initialCss = cssEditorParent.textContent || "";
+    cssEditorParent.textContent = "";
+    const cssEditor = new EditorView({
+      doc: initialCss,
+      extensions: [basicSetup, css(), vscodeDark],
+      parent: cssEditorParent,
+    });
+
+    const jsEditorParent = editorContainer.querySelector("#js-editor")!;
+    const initialJs = jsEditorParent.textContent || "";
+    jsEditorParent.textContent = "";
+    const jsEditor = new EditorView({
+      doc: initialJs,
+      extensions: [basicSetup, javascript(), vscodeDark],
+      parent: jsEditorParent,
+    });
+
+    const preview = editorContainer.querySelector(
+      "iframe",
+    ) as HTMLIFrameElement;
+
+    function updatePreview() {
+      const htmlContent = htmlEditor.state.doc.toString();
+      const cssContent = cssEditor.state.doc.toString();
+      const jsContent = jsEditor.state.doc.toString();
+
+      const content = `
+        <html>
+          <head>
+            <style>${cssContent}</style>
+          </head>
+          <body>
+            ${htmlContent}
+            <script>${jsContent}<\/script>
+          </body>
+        </html>
+      `;
+
+      preview.srcdoc = content;
+    }
+
+    htmlEditor.dom.addEventListener("keyup", updatePreview);
+    cssEditor.dom.addEventListener("keyup", updatePreview);
+    jsEditor.dom.addEventListener("keyup", updatePreview);
+
+    // Tab switching logic
+    const tabs = editorContainer.querySelectorAll('.tab');
+    const editors = editorContainer.querySelectorAll('.editor');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-target');
+        tabs.forEach(t => t.classList.remove('active'));
+        editors.forEach(e => e.classList.add('hidden'));
+        tab.classList.add('active');
+        editorContainer.querySelector(`#${target}-editor`)?.classList.remove('hidden');
+      });
+    });
+
+    // Initial preview
+    updatePreview();
+  }
+
+  document.querySelectorAll(".live-editor").forEach(setupEditor);
+</script>
+
+<style is:global>
+  @import "https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css";
+  @import "https://fonts.googleapis.com/css2?family=Fira+Code&display=swap";
+
+  .cm-editor .cm-scroller {
+    font-family: "Fira Code", monospace;
+    font-size: 14px;
+  }
+
+  .tab {
+    @apply text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
+  }
+
+  .tab.active {
+    @apply bg-neutral-600;
+  }
+
+  .editor {
+    @apply flex-1 max-h-full overflow-auto;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>

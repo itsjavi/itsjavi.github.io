@@ -1,0 +1,20 @@
+---
+import LiveEditor from "../components/LiveEditor.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Live Code Editor for HTML/CSS/JS</title>
+  </head>
+  <body class="h-screen">
+    <LiveEditor
+      initialHtml="<h1>Hello, World!</h1>"
+      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }"
+      initialJs="console.log('Hello from the code editor!');"
+    />
+  </body>
+</html>
