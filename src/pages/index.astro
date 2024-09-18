@@ -8,7 +8,9 @@ import projects from "../data/projects.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import createSlug from "../lib/createSlug";
 
-const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 
 const last_posts = posts.slice(0, 3);
 const last_projects = projects.slice(0, 3);
@@ -25,20 +27,30 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
     <div class="text-5xl font-bold">I'm Javi Aguilar</div>
     <div class="text-3xl py-3 font-bold">Full-Stack Software Engineer</div>
     <div class="py-2 text-lg">
-        📍 Berlin. Passionate about web technologies and crafting good user experiences. 
-        I help teams launch successful products while experimenting and driving innovation through 
-        many side projects.
+      📍 Berlin. Passionate about web technologies and crafting good user
+      experiences. I help teams launch successful products while experimenting
+      and exploring new technologies through many side projects.
     </div>
     <div class="py-2 text-lg flex flex-wrap gap-2">
-        <span class="badge badge-outline">Next.js</span>
-        <span class="badge badge-outline">React</span>
-        <span class="badge badge-outline">TypeScript</span>
-        <span class="badge badge-outline">JavaScript</span>
-        <span class="badge badge-outline">CSS</span>
-        <span class="badge badge-outline">PHP</span>
-        <span class="badge badge-outline">Symfony</span>
-        <span class="badge badge-outline">AWS</span>
-        <span class="badge badge-outline">DBs</span>
+      <span class="badge badge-outline">JavaScript</span>
+      <span class="badge badge-outline">TypeScript</span>
+      <span class="badge badge-outline">CSS</span>
+      <!-- <span class="badge badge-outline">TailwindCSS</span> -->
+      <span class="badge badge-outline">HTML</span>
+      <!-- <span class="badge badge-outline">Next.js</span>
+      <span class="badge badge-outline">Astro</span>
+      <span class="badge badge-outline">Remix</span> -->
+      <span class="badge badge-outline">PHP</span>
+      <!-- <span class="badge badge-outline">Symfony</span> -->
+      <span class="badge badge-outline">React</span>
+      <span class="badge badge-outline">Astro</span>
+      <span class="badge badge-outline">AWS</span>
+      <span class="badge badge-outline">Cloudflare</span>
+      <!-- <span class="badge badge-outline">DynamoDB</span>
+      <span class="badge badge-outline">PostgreSQL</span>
+      <span class="badge badge-outline">Redis</span>
+      <span class="badge badge-outline">Kafka</span>
+      <span class="badge badge-outline">OpenSearch</span> -->
     </div>
   </div>
 
@@ -47,28 +59,30 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
       <>
         <div>
           <div class="text-3xl w-full font-bold mb-2">Recent posts</div>
-      </div>
-      {
-    last_posts.map((post) => (
-      <>
-        <HorizontalCard
-          title={post.data.title}
-          img={post.data.heroImage}
-          desc={post.data.description}
-          url={"/blog/" + createSlug(post.data.title, post.slug)}
-          target="_self"
-          badge={post.data.badge}
-        />
-        <div class="divider my-0" />
+        </div>
+        {last_posts.map((post) => (
+          <>
+            <HorizontalCard
+              title={post.data.title}
+              img={post.data.heroImage}
+              desc={post.data.description}
+              url={"/blog/" + createSlug(post.data.title, post.slug)}
+              target="_self"
+              badge={post.data.badge}
+            />
+            <div class="divider my-0" />
+          </>
+        ))}
       </>
-    ))}
-      </>
-      
-      )
-}
+    )
+  }
 
   <div>
-    <div class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}>Latest projects <Rocket class="inline-block" /></div>
+    <div
+      class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}
+    >
+      Latest projects <Rocket class="inline-block" />
+    </div>
   </div>
 
   {
@@ -81,18 +95,24 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
           url={project.url}
           badge={project.badge}
         />
-        {index < last_projects.length - 1 && <div class="divider my-0"></div>}
+        {index < last_projects.length - 1 && <div class="divider my-0" />}
       </>
     ))
   }
-  {hasMoreProjects && (
-    <div class="text-center mt-5">
-      <a href="/projects" class="btn btn-outline btn-secondary">View more projects</a>
-    </div>
-  )}
+  {
+    hasMoreProjects && (
+      <div class="text-center mt-5">
+        <a href="/projects" class="btn btn-outline btn-secondary">
+          View more projects
+        </a>
+      </div>
+    )
+  }
 
   <div>
-    <div class="text-3xl w-full font-bold mb-2 mt-10">Latest experiments <FlaskConical class="inline-block" /></div>
+    <div class="text-3xl w-full font-bold mb-2 mt-10">
+      Latest experiments <FlaskConical class="inline-block" />
+    </div>
   </div>
 
   {
@@ -104,13 +124,17 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
           desc={experiment.desc}
           url={"/experiments/" + experiment.slug}
         />
-        {index < last_experiments.length - 1 && <div class="divider my-0"></div>}
+        {index < last_experiments.length - 1 && <div class="divider my-0" />}
       </>
     ))
   }
-  {hasMoreExperiments && (
-    <div class="text-center mt-5">
-      <a href="/experiments" class="btn btn-outline btn-secondary">View more experiments</a>
-    </div>
-  )}
+  {
+    hasMoreExperiments && (
+      <div class="text-center mt-5">
+        <a href="/experiments" class="btn btn-outline btn-secondary">
+          View more experiments
+        </a>
+      </div>
+    )
+  }
 </BaseLayout>
