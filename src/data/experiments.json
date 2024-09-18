@@ -1,20 +1,29 @@
 [
   {
-    "title": "Glassmorphic Button",
-    "desc": "Glassmorphic Button with animated Gradient Border. This example demonstrates how to combine backdrop blur, transparencies, animated custom properties and gradient borders.",
+    "slug": "glassmorphic-button-with-gradient-borders",
+    "title": "Glassmorphic Button with Gradient Borders",
+    "desc": "Button in glassmorphism style with animated gradient borders. This experiment demonstrates how to combine backdrop blur, transparencies, animated custom properties and CSS masks to achieve gradient borders.",
     "img": "/experiments/gradient-borders.webp",
+    "codepenId": "gONQwMw",
+    "codepenUser": "itsjavi",
     "url": "https://codepen.io/itsjavi/pen/gONQwMw"
   },
   {
+    "slug": "animated-css-cdrom",
     "title": "Animated CSS CD-ROM",
-    "desc": "Born in 2022, it has become one of the most popular PokéDex trackers and box organizers in the Pokémon community, with more than 50K active users.",
+    "desc": "A CD-ROM animation with a spinning effect. Combines gradients, animations and skewing transformations.",
     "img": "/experiments/css-cdrom.webp",
+    "codepenId": "RwzjqQd",
+    "codepenUser": "itsjavi",
     "url": "https://codepen.io/itsjavi/pen/RwzjqQd"
   },
   {
+    "slug": "animated-retro-futuristic-grid",
     "title": "Animated Retro Futuristic Grid",
-    "desc": "A retro-futuristic grid with an infinite scrolling effect, using gradients.",
+    "desc": "A retro-futuristic grid with an infinite scrolling horizon effect. Combining gradients, animations and transformations.",
     "img": "/experiments/tron-grid.webp",
+    "codepenId": "MWdeGBp",
+    "codepenUser": "itsjavi",
     "url": "https://codepen.io/itsjavi/pen/MWdeGBp"
   }
 ]

@@ -1,0 +1,23 @@
+---
+import CodePen from "@components/CodePen.astro";
+import { type ExperimentSchema } from "../content/config";
+import BaseLayout from "./BaseLayout.astro";
+
+export interface Props extends ExperimentSchema {}
+
+const { title, desc, img, codepenUser, codepenId } = Astro.props;
+
+const fullTitle = title
+---
+
+<BaseLayout title={fullTitle} description={desc} image={img}, ogType="article">
+  <main class="md:flex md:justify-center">
+    <article class="prose prose-lg max-w-[750px] prose-img:mx-auto">
+      <!-- {img && <Image hidden width={750} height={422} format="webp" src={img} alt={title} class="w-full mb-6 object-cover" />} -->
+      <h1 class="title my-2 text-4xl font-bold">{title}</h1>
+      <div class="divider my-2"></div>
+      <p>{desc}</p>
+      <CodePen user={codepenUser} penId={codepenId} title={title} height="480" />
+    </article>
+  </main>
+</BaseLayout>

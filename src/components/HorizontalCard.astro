@@ -1,5 +1,5 @@
 ---
-const { title, img, desc, url, badge, tags, target = "_blank" } = Astro.props;
+const { title, img, desc, url, badge, tags, target } = Astro.props;
 import { Image } from "astro:assets";
 const tag_url = `${url.split("/").slice(0, -1).join("/")}/tag`;
 ---

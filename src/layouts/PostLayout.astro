@@ -1,18 +1,20 @@
 ---
-import { type BlogSchema } from "../content/config";
-import BaseLayout from "./BaseLayout.astro";
+import { Image } from "astro:assets";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { type BlogSchema } from "../content/config";
+import BaseLayout from "./BaseLayout.astro";
 
 export interface Props extends BlogSchema {}
 
 const { title, description, pubDate, updatedDate, heroImage, badge, tags = [] } = Astro.props;
 dayjs.extend(localizedFormat);
 const displayDate = dayjs(pubDate).format("ll")
-import { Image } from "astro:assets";
+
+const fullTitle = title
 ---
 
-<BaseLayout title={title} description={description} image={heroImage}, ogType="article">
+<BaseLayout title={fullTitle} description={description} image={heroImage}, ogType="article">
   <main class="md:flex md:justify-center">
     <article class="prose prose-lg max-w-[750px] prose-img:mx-auto">
       {heroImage && <Image width={750} height={422} format="webp" src={heroImage} alt={title} class="w-full mb-6" />}

@@ -1,0 +1,45 @@
+---
+export interface Props {
+  penId?: string;
+  user?: string;
+  title?: string;
+  defaultTab?: "result" | "html" | "css" | "js";
+  editable?: "true" | "false";
+  className?: string;
+  height?: string;
+}
+
+const {
+  penId,
+  title,
+  className,
+  height,
+  user = "itsjavi",
+  defaultTab = "result",
+  editable = "true",
+} = Astro.props;
+---
+
+<div class={`my-4 mt-8 ${className}`}>
+  <div
+    class={`codepen box-border flex items-center justify-center border-2 rounded-md p-4`}
+    data-height={height}
+    data-default-tab={defaultTab}
+    data-slug-hash={penId}
+    data-user={user}
+    data-editable={editable}
+    style="height:{height};"
+  >
+    <span
+      >See the Pen <a href=`https://codepen.io/${user}/pen/${penId}`>
+        {title}</a
+      > by (<a href=`https://codepen.io/${user}`>@${user}</a>) on <a
+        href="https://codepen.io">CodePen</a
+      >.</span
+    >
+  </div>
+  <script
+    is:inline
+    async
+    src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+</div>
