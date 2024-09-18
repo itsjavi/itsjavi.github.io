@@ -11,7 +11,7 @@
     "lint:fix": "astro check --fix && pnpm prettify",
     "prepare": "sort-package-json",
     "prettify": "pnpm prettier --write .",
-    "preview": "pnpm build && astro preview",
+    "preview": "astro preview",
     "start": "pnpm dev",
     "typecheck": "tsc --noEmit"
   },

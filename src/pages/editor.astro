@@ -18,9 +18,13 @@ const description = "A live code editor for HTML, CSS, and JavaScript, inspired 
       <p>
         {description}. It uses CodeMirror under the hood.
       </p>
+      <div class="py-2 text-lg flex flex-wrap gap-2">
+        <span class="badge badge-outline">Astro</span>
+        <span class="badge badge-outline">TypeScript</span>
+      </div>
     </div>
     <LiveEditor
-      class="h-[500px]"
+      class="min-h-[500px]"
       initialHtml="<h1>Hello, World!</h1>"
       initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }"
       initialJs="console.log('Hello from the code editor!');"

@@ -21,7 +21,7 @@ const {
   class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
 >
   <div
-    class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700"
+    class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700 max-w-full"
   >
     <div class="flex bg-neutral-700">
       <button class="tab active" data-target="html">HTML</button>
@@ -61,6 +61,7 @@ import { EditorView, basicSetup } from "codemirror";
           matchClosingTags: true,
         }),
         vscodeDark,
+        EditorView.lineWrapping,
       ],
       parent: htmlEditorParent,
     });
@@ -70,7 +71,7 @@ import { EditorView, basicSetup } from "codemirror";
     cssEditorParent.textContent = "";
     const cssEditor = new EditorView({
       doc: initialCss,
-      extensions: [basicSetup, css(), vscodeDark],
+      extensions: [basicSetup, css(), vscodeDark, EditorView.lineWrapping],
       parent: cssEditorParent,
     });
 
@@ -79,7 +80,12 @@ import { EditorView, basicSetup } from "codemirror";
     jsEditorParent.textContent = "";
     const jsEditor = new EditorView({
       doc: initialJs,
-      extensions: [basicSetup, javascript(), vscodeDark],
+      extensions: [
+        basicSetup,
+        javascript(),
+        vscodeDark,
+        EditorView.lineWrapping,
+      ],
       parent: jsEditorParent,
     });
 
@@ -145,6 +151,7 @@ import { EditorView, basicSetup } from "codemirror";
   .cm-editor .cm-scroller {
     font-family: "Fira Code", monospace;
     font-size: 14px;
+    flex-grow: 1;
   }
 
   .tab {
@@ -156,7 +163,7 @@ import { EditorView, basicSetup } from "codemirror";
   }
 
   .editor {
-    @apply flex-1 max-h-full overflow-auto;
+    @apply flex-1 max-h-full max-w-full overflow-auto;
   }
 
   .hidden {
