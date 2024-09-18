@@ -32,18 +32,12 @@ importers:
       '@codemirror/lang-javascript':
         specifier: ^6.2.2
         version: 6.2.2
-      '@uiw/codemirror-theme-github':
-        specifier: ^4.23.2
-        version: 4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)
       '@uiw/codemirror-theme-vscode':
         specifier: ^4.23.2
         version: 4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)
       astro:
         specifier: ^4.15.6
         version: 4.15.6(rollup@4.21.3)(typescript@5.6.2)
-      cm6-theme-material-dark:
-        specifier: ^0.2.0
-        version: 0.2.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)(@lezer/highlight@1.2.1)
       codemirror:
         specifier: ^6.0.1
         version: 6.0.1(@lezer/common@1.2.1)
@@ -764,9 +758,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@uiw/codemirror-theme-github@4.23.2':
-    resolution: {integrity: sha512-CFH6JVwQ8MPRiY32Fy13I+iiD56eYE8jBpGjtPZPiYDcxAmRNU++x79vCguO3dpXUvqSJ9bPjcHbz4wOXxCVEw==}
-
   '@uiw/codemirror-theme-vscode@4.23.2':
     resolution: {integrity: sha512-SpXlCOCtuu8zTiTO6Cs8Oa5/czItZ59t5MfocJmjOFVN3C22VIR0oXqi375fTl+YS9Mw2+TaOSuIzuzkXH1OEQ==}
 
@@ -975,14 +966,6 @@ packages:
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
-
-  cm6-theme-material-dark@0.2.0:
-    resolution: {integrity: sha512-H09JZihzg4w0mTtOqo5bQdxItkQWw+ergKlk7BSfwYjaR2nOi+wIN0R+ByAo7bON8GbFODvjTxH3EIqdhovFeA==}
-    peerDependencies:
-      '@codemirror/language': ^6.0.0
-      '@codemirror/state': ^6.0.0
-      '@codemirror/view': ^6.0.0
-      '@lezer/highlight': ^1.0.0
 
   codemirror@6.0.1:
     resolution: {integrity: sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg==}
@@ -3269,14 +3252,6 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@uiw/codemirror-theme-github@4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)':
-    dependencies:
-      '@uiw/codemirror-themes': 4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)
-    transitivePeerDependencies:
-      - '@codemirror/language'
-      - '@codemirror/state'
-      - '@codemirror/view'
-
   '@uiw/codemirror-theme-vscode@4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)':
     dependencies:
       '@uiw/codemirror-themes': 4.23.2(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)
@@ -3577,13 +3552,6 @@ snapshots:
       wrap-ansi: 7.0.0
 
   clsx@2.1.1: {}
-
-  cm6-theme-material-dark@0.2.0(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.33.0)(@lezer/highlight@1.2.1):
-    dependencies:
-      '@codemirror/language': 6.10.2
-      '@codemirror/state': 6.4.1
-      '@codemirror/view': 6.33.0
-      '@lezer/highlight': 1.2.1
 
   codemirror@6.0.1(@lezer/common@1.2.1):
     dependencies:
