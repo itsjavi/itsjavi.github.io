@@ -16,11 +16,13 @@ const image = "/experiments/live-editor.webp";
   <body class="w-screen h-screen bg-base-100">
     <LiveEditor
       class="w-full h-full"
-      initialHtml="<h1>Hello, World!</h1>"
-      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }"
-      initialJs="console.log('Hello from the code editor!');"
+      title="Hello World"
+      initialHtml="<h1>Hello, World!</h1>\n"
+      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }\n"
+      initialJs="console.log('Hello from the code editor!');\n"
       localStorageKey="editor_code"
       withCodepenButton
+      expandedEditors={true}
     />
   </body>
 </html>

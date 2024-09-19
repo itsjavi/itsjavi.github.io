@@ -1,20 +1,26 @@
 ---
+import { Edit, ChevronsDownUp } from "lucide-astro";
+
 interface Props {
   class?: string;
+  title?: string;
   initialHtml?: string;
   initialCss?: string;
   initialJs?: string;
   localStorageKey?: string;
   withCodepenButton?: boolean;
+  expandedEditors?: boolean; // New prop
 }
 
 const {
+  title = "Untitled",
   initialHtml = "",
   initialCss = "",
   initialJs = "",
   class: className = "",
   localStorageKey,
   withCodepenButton = false,
+  expandedEditors = false,
 } = Astro.props;
 
 // Important! This component is not compatible with Astro's view transitions:
@@ -25,28 +31,27 @@ const {
   action={withCodepenButton ? "https://codepen.io/pen/define" : undefined}
   method="POST"
   target="_blank"
-  class={className}
+  class={`live-editor live-editor--static ${className}`}
+  data-storage-key={localStorageKey}
+  data-expanded-editors={expandedEditors ? "true" : "false"}
 >
   <input
-    id="codepen-data"
+    class="codepen-data"
     type="hidden"
     name="data"
     value={JSON.stringify({
-      // title: "My Awesome Pen",
+      title: title,
       html: initialHtml,
       css: initialCss,
       js: initialJs,
     })}
   />
 
-  <div
-    class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700`}
-    data-storage-key={localStorageKey}
-  >
+  <div class={`grid grid-rows-5 flex-1 w-full h-full border border-gray-700`}>
     <div
-      class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700 max-w-full"
+      class="row-span-2 flex flex-col bg-gray-900 border-b border-gray-700 max-w-full editors-container"
     >
-      <div class="flex justify-between bg-neutral-700">
+      <div class="flex justify-between bg-gray-700">
         <div class="flex flex-row">
           <button type="button" class="tab active" data-target="html"
             >HTML</button
@@ -68,13 +73,9 @@ const {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <>
-                  <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <g id="SVGRepo_iconCarrier">
+                  <g stroke-width="0" />
+                  <g stroke-linecap="round" stroke-linejoin="round" />
+                  <g>
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
@@ -95,14 +96,36 @@ const {
           )
         }
       </div>
-      <div id="html-editor" class="editor active">{initialHtml}</div>
-      <div id="css-editor" class="editor hidden">{initialCss}</div>
-      <div id="js-editor" class="editor hidden">{initialJs}</div>
+      <div class="html-editor editor active">{initialHtml}</div>
+      <div class="css-editor editor hidden">{initialCss}</div>
+      <div class="js-editor editor hidden">{initialJs}</div>
     </div>
-    <div class="row-span-3 flex flex-col bg-black">
-      <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">
-        Preview
-      </h3>
+    <div
+      class={`${expandedEditors ? "row-span-3" : "row-span-5"} flex flex-col bg-black preview-container`}
+    >
+      <div
+        class="bg-gray-700 text-white text-sm font-bold px-4 py-3 flex justify-between items-center"
+      >
+        <h3>
+          <div class="flex flex-row gap-2">
+            <span class="preview-title" contenteditable="false">
+              {title}
+            </span>
+            <span hidden class="preview-title-separator">-</span>
+            <span hidden class="text-gray-400">Preview</span>
+          </div>
+        </h3>
+        <div>
+          <button
+            title="Toggle editors"
+            type="button"
+            class="toggle-edit-btn text-gray-400 hover:text-white px-2"
+          >
+            <ChevronsDownUp size={16} class={expandedEditors ? "" : "hidden"} />
+            <Edit size={16} class={expandedEditors ? "hidden" : ""} />
+          </button>
+        </div>
+      </div>
       <iframe class="flex-1 border-none"></iframe>
     </div>
   </div>
@@ -142,28 +165,49 @@ import { debounce } from "lodash-es";
 
   function setupEditor(editorContainer: Element) {
     editorContainer.classList.remove("live-editor--static");
+
+    const jsonDataInput = editorContainer.querySelector(
+      ".codepen-data",
+    ) as HTMLInputElement;
+
+    jsonDataInput.addEventListener("input", (e) => {
+      console.log((e.target as HTMLInputElement).value);
+    });
+
     const htmlEditor = createEditor(
       editorContainer,
-      "#html-editor",
+      ".html-editor",
       html({
         autoCloseTags: true,
         matchClosingTags: true,
       }),
     );
-    const cssEditor = createEditor(editorContainer, "#css-editor", css());
-    const jsEditor = createEditor(editorContainer, "#js-editor", javascript());
+    const cssEditor = createEditor(editorContainer, ".css-editor", css());
+    const jsEditor = createEditor(editorContainer, ".js-editor", javascript());
 
     const preview = editorContainer.querySelector(
       "iframe",
     ) as HTMLIFrameElement;
 
-    const storageKey = editorContainer.getAttribute("data-storage-key");
+    const editorsContainer = editorContainer.querySelector(
+      ".editors-container",
+    ) as HTMLElement;
+    const previewContainer = editorContainer.querySelector(
+      ".preview-container",
+    ) as HTMLElement;
+    const toggleEditBtn = editorContainer.querySelector(
+      ".toggle-edit-btn",
+    ) as HTMLButtonElement;
+    const previewTitle = editorContainer.querySelector(
+      ".preview-title",
+    ) as HTMLHeadingElement;
 
+    const storageKey = editorContainer.getAttribute("data-storage-key");
     // Load saved content from localStorage if storageKey is provided
     if (storageKey) {
       const savedContent = localStorage.getItem(storageKey);
       if (savedContent) {
-        const { html, css, js } = JSON.parse(savedContent);
+        const { html, css, js, title } = JSON.parse(savedContent);
         htmlEditor.dispatch({
           changes: { from: 0, to: htmlEditor.state.doc.length, insert: html },
         });
@@ -173,23 +217,96 @@ import { debounce } from "lodash-es";
         jsEditor.dispatch({
           changes: { from: 0, to: jsEditor.state.doc.length, insert: js },
         });
+        previewTitle.textContent = title;
       }
     }
 
     const saveToLocalStorage = storageKey
-      ? debounce(() => {
-          const content = {
-            html: htmlEditor.state.doc.toString(),
-            css: cssEditor.state.doc.toString(),
-            js: jsEditor.state.doc.toString(),
-          };
-          localStorage.setItem(storageKey, JSON.stringify(content));
+      ? debounce((data: string) => {
+          localStorage.setItem(storageKey, data);
         }, 400)
-      : () => {};
+      : (_data: string) => {};
 
-    const codepenDataInput = document.getElementById(
-      "codepen-data",
-    ) as HTMLInputElement;
+    // Set initial editors visibility
+    const initialExpandedState =
+      editorContainer.getAttribute("data-expanded-editors") === "true";
+    editorsContainer.style.display = initialExpandedState ? "flex" : "none";
+    updateToggleButtonIcon(initialExpandedState);
+
+    previewTitle.addEventListener("click", () => {
+      const isExpanded = editorsContainer.style.display !== "none";
+      if (isExpanded) {
+        previewTitle.contentEditable = "true";
+      }
+    });
+    toggleEditBtn.addEventListener("click", () => {
+      const isExpanded = editorsContainer.style.display !== "none";
+      editorsContainer.style.display = isExpanded ? "none" : "flex";
+      previewTitle.contentEditable = isExpanded ? "false" : "true";
+      updateToggleButtonIcon(!isExpanded);
+
+      if (!isExpanded) {
+        previewContainer.classList.toggle("row-span-3", isExpanded);
+        previewTitle.focus();
+        const range = document.createRange();
+        range.selectNodeContents(previewTitle);
+        range.collapse(false); // This moves the cursor to the end
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      } else {
+        previewContainer.classList.toggle("row-span-5", isExpanded);
+      }
+    });
+
+    previewTitle.addEventListener("blur", () => {
+      updateJsonData();
+    });
+
+    previewTitle.addEventListener(
+      "keydown",
+      debounce((e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          previewTitle.blur();
+          return;
+        }
+
+        updateJsonData();
+      }, 200),
+    );
+
+    function updateToggleButtonIcon(isExpanded: boolean) {
+      if (isExpanded) {
+        toggleEditBtn
+          .querySelector("svg:first-child")!
+          .classList.remove("hidden");
+        toggleEditBtn.querySelector("svg:last-child")!.classList.add("hidden");
+      } else {
+        toggleEditBtn.querySelector("svg:first-child")!.classList.add("hidden");
+        toggleEditBtn
+          .querySelector("svg:last-child")!
+          .classList.remove("hidden");
+      }
+    }
+
+    function updateJsonData() {
+      const htmlContent = htmlEditor.state.doc.toString();
+      const cssContent = cssEditor.state.doc.toString();
+      const jsContent = jsEditor.state.doc.toString();
+      const currentTitle = previewTitle.textContent || "";
+
+      const jsonData = JSON.stringify({
+        title: currentTitle,
+        html: htmlContent,
+        css: cssContent,
+        js: jsContent,
+      });
+      jsonDataInput.value = jsonData;
+      saveToLocalStorage(jsonData);
+    }
 
     function updatePreview() {
       const htmlContent = htmlEditor.state.doc.toString();
@@ -204,14 +321,9 @@ import { debounce } from "lodash-es";
         </body>
       </html>`;
 
-      codepenDataInput.value = JSON.stringify({
-        html: htmlContent,
-        css: cssContent,
-        js: jsContent,
-      });
-
       preview.srcdoc = content.trim();
-      saveToLocalStorage();
+
+      updateJsonData();
     }
 
     htmlEditor.dom.addEventListener("keyup", debounce(updatePreview, 200));
@@ -229,7 +341,7 @@ import { debounce } from "lodash-es";
         editors.forEach((e) => e.classList.add("hidden"));
         tab.classList.add("active");
         editorContainer
-          .querySelector(`#${target}-editor`)
+          .querySelector(`.${target}-editor`)
           ?.classList.remove("hidden");
       });
     });
@@ -249,16 +361,21 @@ import { debounce } from "lodash-es";
     flex-grow: 1;
   }
 
+  .cm-editor .cm-scroller,
+  .cm-editor .cm-gutters {
+    @apply bg-gray-900;
+  }
+
   .tab {
     @apply text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
   }
 
   .codepen-btn {
-    @apply text-neutral-400 hover:text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
+    @apply text-gray-400 hover:text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
   }
 
   .tab.active {
-    @apply bg-neutral-600;
+    @apply bg-gray-600;
   }
 
   .editor {
@@ -272,5 +389,13 @@ import { debounce } from "lodash-es";
       cursor: not-allowed;
       pointer-events: none;
     }
+  }
+
+  .preview-title[contenteditable="true"] {
+    @apply outline-none border-b border-dashed border-white;
+  }
+
+  .toggle-edit-btn {
+    @apply text-gray-400 hover:text-white text-sm font-bold cursor-pointer;
   }
 </style>
