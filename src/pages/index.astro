@@ -17,6 +17,7 @@ const last_projects = projects.slice(0, 3);
 const last_experiments = experiments.slice(0, 3);
 
 const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED;
+const hasMoreBlogPosts = posts.length > last_posts.length && IS_BLOG_ENABLED;
 const hasMoreProjects = projects.length > last_projects.length;
 const hasMoreExperiments = experiments.length > last_experiments.length;
 ---
@@ -73,6 +74,13 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
             <div class="divider my-0" />
           </>
         ))}
+        {hasMoreBlogPosts && (
+          <div class="text-center mt-5">
+            <a href="/blog" class="btn btn-outline btn-gray">
+              View more posts
+            </a>
+          </div>
+        )}
       </>
     )
   }
@@ -102,7 +110,7 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
   {
     hasMoreProjects && (
       <div class="text-center mt-5">
-        <a href="/projects" class="btn btn-outline btn-secondary">
+        <a href="/projects" class="btn btn-outline btn-gray">
           View more projects
         </a>
       </div>
@@ -131,7 +139,7 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
   {
     hasMoreExperiments && (
       <div class="text-center mt-5">
-        <a href="/experiments" class="btn btn-outline btn-secondary">
+        <a href="/experiments" class="btn btn-outline btn-gray">
           View more experiments
         </a>
       </div>
