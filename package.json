@@ -7,10 +7,9 @@
     "build": "astro check && astro build",
     "dev": "astro dev --open",
     "format": "pnpm lint:fix",
-    "lint": "pnpm typecheck && astro check",
-    "lint:fix": "astro check --fix && pnpm prettify",
+    "lint": "pnpm typecheck && astro check && pnpm prettier --check .",
+    "lint:fix": "sort-package-json && pnpm prettier --write .",
     "prepare": "sort-package-json",
-    "prettify": "pnpm prettier --write .",
     "preview": "astro preview",
     "start": "pnpm dev",
     "typecheck": "tsc --noEmit"
