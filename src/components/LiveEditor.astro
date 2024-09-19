@@ -25,6 +25,7 @@ const {
   action={withCodepenButton ? "https://codepen.io/pen/define" : undefined}
   method="POST"
   target="_blank"
+  class={className}
 >
   <input
     id="codepen-data"
@@ -39,7 +40,7 @@ const {
   />
 
   <div
-    class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
+    class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700`}
     data-storage-key={localStorageKey}
   >
     <div

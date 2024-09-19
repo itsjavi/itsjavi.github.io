@@ -1,0 +1,26 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import LiveEditor from "../../components/LiveEditor.astro";
+
+const title = "Live Code Editor for HTML/CSS/JS";
+const description =
+  "A live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
+const image = "/experiments/live-editor.webp";
+---
+
+<!doctype html>
+<html lang="en" data-theme="lofi">
+  <head>
+    <BaseHead title={title} description={description} image={image} />
+  </head>
+  <body class="w-screen h-screen bg-base-100">
+    <LiveEditor
+      class="w-full h-full"
+      initialHtml="<h1>Hello, World!</h1>"
+      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }"
+      initialJs="console.log('Hello from the code editor!');"
+      localStorageKey="editor_code"
+      withCodepenButton
+    />
+  </body>
+</html>

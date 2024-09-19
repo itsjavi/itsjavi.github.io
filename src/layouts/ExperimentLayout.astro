@@ -10,7 +10,7 @@ const { title, desc, img, codepenUser, codepenId } = Astro.props;
 const fullTitle = title
 ---
 
-<BaseLayout title={fullTitle} description={desc} image={img}, ogType="article">
+<BaseLayout title={fullTitle} description={desc} image={img} ogType="article">
   <main class="md:flex md:justify-center">
     <article class="prose prose-lg max-w-[750px] prose-img:mx-auto">
       <!-- {img && <Image hidden width={750} height={422} format="webp" src={img} alt={title} class="w-full mb-6 object-cover" />} -->
