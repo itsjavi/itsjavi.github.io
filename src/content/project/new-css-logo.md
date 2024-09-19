@@ -1,9 +1,6 @@
 ---
 title: "New CSS Logo"
 desc: "I worked on the redesigned CSS Logo, proposed to the CSS-Next community group, a part of the W3C."
-desc_alt:
-  "A redesigned CSS Logo, chosen by the community and the CSS-Next community group, a part of the W3C. The design
-  includes many hat tips to CSS like rounded corners, tooltips and color pickers."
 img: "/projects/csslogo.webp"
 badge: "Design"
 customSlug: "new-css-logo"

@@ -4,7 +4,6 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import { Rocket } from "lucide-astro";
 import HorizontalCard from "../../components/HorizontalCard.astro";
-import projects from "../../data/projects.json";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
@@ -43,7 +42,7 @@ const { page } = Astro.props;
           url={`/projects/${createSlugV2(project)}`}
           badge={project.data.badge}
         />
-        {index < projects.length - 1 && <div class="divider my-0" />}
+        {index < page.data.length - 1 && <div class="divider my-0" />}
       </>
     ))
   }
