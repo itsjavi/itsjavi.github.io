@@ -11,7 +11,7 @@ pubDate: "Sep 19 2024"
 updatedDate: "Sep 19 2024"
 ---
 
-<div class="mt-6 flex gap-4">
+<div class="mt-6 flex gap-4 flex-col sm:flex-row items-start">
   <a href="https://www.figma.com/design/wd0LiyCtqx0P1q4Mb9Sgxy/CSS-Logo?t=8esTF1lFbzdIoP6C-0" class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
     View in Figma
   </a>
