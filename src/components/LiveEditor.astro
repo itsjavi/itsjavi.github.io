@@ -121,12 +121,12 @@ const {
 
 <script>
   import { css } from "@codemirror/lang-css";
-import { html } from "@codemirror/lang-html";
-import { javascript } from "@codemirror/lang-javascript";
-import type { Extension } from "@codemirror/state";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { EditorView, basicSetup } from "codemirror";
-import { debounce } from "lodash-es";
+  import { html } from "@codemirror/lang-html";
+  import { javascript } from "@codemirror/lang-javascript";
+  import type { Extension } from "@codemirror/state";
+  import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+  import { EditorView, basicSetup } from "codemirror";
+  import { debounce } from "lodash-es";
 
   function createEditor(editorContainer: Element, selector: string, langExtension: Extension) {
     const editorElement = editorContainer.querySelector(selector)!;

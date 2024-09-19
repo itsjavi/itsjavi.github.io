@@ -1,6 +1,6 @@
 ---
 title: "New CSS Logo"
-desc: "I worked on the redesigned CSS Logo, proposed to the CSS-Next community group, a part of the W3C."
+desc: "I created a new CSS Logo, and proposed it to the CSS-Next community group (a part of the W3C)."
 img: "/projects/csslogo.webp"
 badge: "Design"
 customSlug: "new-css-logo"
@@ -20,7 +20,7 @@ updatedDate: "Sep 19 2024"
   </a>
 </div>
 
-I worked on the redesigned CSS Logo, proposed to the
+I created a modern CSS Logo design, and proposed it to the
 [CSS-Next community group](https://lists.w3.org/Archives/Public/www-archive/2023Nov/att-0002/CSS-Next_Community_Group.pdf),
 a part of the W3C.
 
