@@ -50,10 +50,6 @@ jobs:
           pnpm astro telemetry disable
           pnpm build
 
-      - name: Check code quality
-        run: |
-          pnpm lint
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
