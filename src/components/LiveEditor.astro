@@ -108,7 +108,7 @@ const {
       >
         <h3>
           <div class="flex flex-row gap-2">
-            <span class="preview-title" contenteditable="false">
+            <span class="preview-title" contenteditable="false" tabindex={"0"}>
               {title}
             </span>
             <span hidden class="preview-title-separator">-</span>
@@ -126,7 +126,7 @@ const {
           </button>
         </div>
       </div>
-      <iframe class="flex-1 border-none"></iframe>
+      <iframe class="flex-1 border-none" aria-label="Preview"></iframe>
     </div>
   </div>
 </form>
@@ -261,8 +261,9 @@ import { debounce } from "lodash-es";
       }
     });
 
-    previewTitle.addEventListener("blur", () => {
+    previewTitle.addEventListener("blur", (e) => {
       updateJsonData();
+      previewTitle.contentEditable = "false";
     });
 
     previewTitle.addEventListener(

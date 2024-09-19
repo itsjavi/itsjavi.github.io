@@ -45,14 +45,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check code quality
-        run: |
-          pnpm lint
-
       - name: Build
         run: |
           pnpm astro telemetry disable
           pnpm build
+
+      - name: Check code quality
+        run: |
+          pnpm lint
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
