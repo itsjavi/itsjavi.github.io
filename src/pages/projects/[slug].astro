@@ -1,0 +1,29 @@
+---
+import { type ProjectSchema } from "../../content/config";
+import projects from "../../data/projects.json";
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+
+export async function getStaticPaths() {
+  return projects.map((entry: ProjectSchema) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: ProjectSchema;
+}
+
+const { entry } = Astro.props;
+---
+
+<ProjectLayout
+  title={entry.title}
+  desc={entry.desc}
+  img={entry.img}
+  slug={entry.slug}
+  url={entry.url}
+  badge={entry.badge}
+>
+  {entry.desc}
+</ProjectLayout>

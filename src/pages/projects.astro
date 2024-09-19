@@ -18,7 +18,7 @@ import projects from "../data/projects.json";
           title={project.title}
         img={project.img}
         desc={project.desc}
-        url={project.url}
+        url={`/projects/${project.slug}`}
         badge={project.badge}
       />
      {index < projects.length - 1 && <div class="divider my-0"></div>}

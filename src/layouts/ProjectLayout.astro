@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import { type ProjectSchema } from "../content/config";
+import BaseLayout from "./BaseLayout.astro";
+
+export interface Props extends ProjectSchema {}
+
+const { title, desc, img, url, badge } = Astro.props;
+
+const fullTitle = title;
+---
+
+<BaseLayout title={fullTitle} description={desc} image={img} ogType="article">
+  <main class="md:flex md:justify-center">
+    <article class="prose prose-lg max-w-[750px] prose-img:mx-auto">
+      {
+        img && (
+          <Image
+            width={750}
+            height={422}
+            format="webp"
+            src={img}
+            alt={title}
+            class="w-full mb-6 object-cover"
+          />
+        )
+      }
+      <h1 class="title my-2 text-4xl font-bold">{title}</h1>
+      {badge && <div class="badge badge-gray badge-outline my-1">{badge}</div>}
+      <div class="divider my-2"></div>
+      <p>{desc}</p>
+      {
+        url && (
+          <a href={url} class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
+            Visit Project
+          </a>
+        )
+      }
+    </article>
+  </main>
+</BaseLayout>

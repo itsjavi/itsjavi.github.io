@@ -19,6 +19,8 @@ const projectSchema = z.object({
   slug: z.string(),
   desc: z.string(),
   img: z.string(),
+  url: z.string().optional(),
+  badge: z.string().optional(),
 });
 
 const experimentSchema = z.object({

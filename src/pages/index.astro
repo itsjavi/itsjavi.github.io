@@ -92,7 +92,7 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
           title={project.title}
           img={project.img}
           desc={project.desc}
-          url={project.url}
+          url={`/projects/${project.slug}`}
           badge={project.badge}
         />
         {index < last_projects.length - 1 && <div class="divider my-0" />}

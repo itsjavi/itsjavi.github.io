@@ -1,31 +1,35 @@
 [
   {
-    "title": "CSS Logo",
+    "title": "New CSS Logo",
     "desc": "A redesigned CSS Logo, proposed to the CSS-Next community group, a part of the W3C. The design includes many hat tips to CSS like rounded corners, and elements like tooltips and color pickers. The chosen web color is hotpink, the closest to the pink in the JS logo tetradic. Pink is also often related to makeup 💅, and CSS is the makeup of the web.",
     "desc_alt": "A redesigned CSS Logo, chosen by the community and the CSS-Next community group, a part of the W3C. The design includes many hat tips to CSS like rounded corners, tooltips and color pickers.",
     "img": "/projects/csslogo.webp",
     "url": "https://codepen.io/itsjavi/pen/XWLwvxp",
-    "badge": "Design"
+    "badge": "Design",
+    "slug": "new-css-logo"
   },
   {
-    "title": "JynXS",
+    "title": "JynXS - Custom JSX runtime",
     "desc": "[Experimental] Small (~3KB) JSX runtime that implements the very basics of React including state and effects, but adding many extras on top like async components and conditional classNames.",
     "img": "/projects/jynxs.webp",
     "url": "https://itsjavi.com/jynxs",
-    "badge": "Library"
+    "badge": "Library",
+    "slug": "jynxs"
   },
   {
-    "title": "SuperEffective.gg",
+    "title": "SuperEffective.gg - Pokédex Tracker",
     "desc": "Born in 2022, it has become one of the most popular PokéDex trackers and box organizers in the Pokémon community, with more than 50K active users.",
     "img": "/projects/supereffective.webp",
     "url": "https://supereffective.gg",
-    "badge": "Website"
+    "badge": "Website",
+    "slug": "supereffective"
   },
   {
-    "title": "StoryLite",
+    "title": "StoryLite - Lightweight Storybook for React",
     "desc": "[Experimental] Lightweight Storybook alternative written on top of Vite. A drop-in app for rapid React component development and visualisation.",
     "img": "/projects/storylite.webp",
     "url": "https://itsjavi.com/storylite",
-    "badge": "Dev Tools"
+    "badge": "Dev Tools",
+    "slug": "storylite"
   }
 ]
