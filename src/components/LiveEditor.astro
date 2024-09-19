@@ -5,6 +5,7 @@ interface Props {
   initialCss?: string;
   initialJs?: string;
   localStorageKey?: string;
+  withCodepenButton?: boolean;
 }
 
 const {
@@ -13,35 +14,98 @@ const {
   initialJs = "",
   class: className = "",
   localStorageKey,
+  withCodepenButton = false,
 } = Astro.props;
 
 // Important! This component is not compatible with Astro's view transitions:
 // when navigating to this page after a view transition, the editor will not be initialized.
 ---
 
-<div
-  class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
-  data-storage-key={localStorageKey}
+<form
+  action={withCodepenButton ? "https://codepen.io/pen/define" : undefined}
+  method="POST"
+  target="_blank"
 >
+  <input
+    id="codepen-data"
+    type="hidden"
+    name="data"
+    value={JSON.stringify({
+      // title: "My Awesome Pen",
+      html: initialHtml,
+      css: initialCss,
+      js: initialJs,
+    })}
+  />
+
   <div
-    class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700 max-w-full"
+    class={`live-editor live-editor--static grid grid-rows-5 flex-1 w-full h-full border border-gray-700 ${className}`}
+    data-storage-key={localStorageKey}
   >
-    <div class="flex bg-neutral-700">
-      <button class="tab active" data-target="html">HTML</button>
-      <button class="tab" data-target="css">CSS</button>
-      <button class="tab" data-target="js">JavaScript</button>
+    <div
+      class="row-span-2 flex flex-col bg-[#1E1E1E] border-b border-neutral-700 max-w-full"
+    >
+      <div class="flex justify-between bg-neutral-700">
+        <div class="flex flex-row">
+          <button type="button" class="tab active" data-target="html"
+            >HTML</button
+          >
+          <button type="button" class="tab" data-target="css">CSS</button>
+          <button type="button" class="tab" data-target="js">JS</button>
+        </div>
+
+        {
+          withCodepenButton && (
+            <button class="codepen-btn" type="submit">
+              Send to CodePen
+              <svg
+                width="24px"
+                height="24px"
+                class="inline"
+                viewBox="0 -0.5 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M16.5 12L13 14.333V19L20 14.333V9.667L13 5V9.667L16.5 12Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M6.41598 9.04293C6.07132 8.81319 5.60568 8.90635 5.37593 9.25102C5.14619 9.59568 5.23935 10.0613 5.58402 10.2911L6.41598 9.04293ZM12.584 14.9571C12.9287 15.1868 13.3943 15.0936 13.6241 14.749C13.8538 14.4043 13.7606 13.9387 13.416 13.7089L12.584 14.9571ZM6.75 9.667C6.75 9.25279 6.41421 8.917 6 8.917C5.58579 8.917 5.25 9.25279 5.25 9.667H6.75ZM5.25 14.333C5.25 14.7472 5.58579 15.083 6 15.083C6.41421 15.083 6.75 14.7472 6.75 14.333H5.25ZM5.58395 9.04298C5.23932 9.27275 5.1462 9.73841 5.37598 10.083C5.60575 10.4277 6.07141 10.5208 6.41605 10.291L5.58395 9.04298ZM13.416 5.62402C13.7607 5.39425 13.8538 4.92859 13.624 4.58395C13.3942 4.23932 12.9286 4.1462 12.584 4.37598L13.416 5.62402ZM13.416 10.2911C13.7606 10.0613 13.8538 9.59568 13.6241 9.25102C13.3943 8.90635 12.9287 8.81319 12.584 9.04293L13.416 10.2911ZM5.58402 13.7089C5.23935 13.9387 5.14619 14.4043 5.37593 14.749C5.60568 15.0936 6.07132 15.1868 6.41598 14.9571L5.58402 13.7089ZM6.41605 13.709C6.07141 13.4792 5.60575 13.5723 5.37598 13.917C5.1462 14.2616 5.23932 14.7272 5.58395 14.957L6.41605 13.709ZM12.584 19.624C12.9286 19.8538 13.3942 19.7607 13.624 19.416C13.8538 19.0714 13.7607 18.6058 13.416 18.376L12.584 19.624ZM20.416 10.2911C20.7606 10.0613 20.8538 9.59568 20.6241 9.25102C20.3943 8.90635 19.9287 8.81319 19.584 9.04293L20.416 10.2911ZM16.5 12L16.084 11.3759C15.8753 11.515 15.75 11.7492 15.75 12C15.75 12.2508 15.8753 12.485 16.084 12.6241L16.5 12ZM19.584 14.9571C19.9287 15.1868 20.3943 15.0936 20.6241 14.749C20.8538 14.4043 20.7606 13.9387 20.416 13.7089L19.584 14.9571ZM5.58402 10.2911L12.584 14.9571L13.416 13.7089L6.41598 9.04293L5.58402 10.2911ZM5.25 9.667V14.333H6.75V9.667H5.25ZM6.41605 10.291L13.416 5.62402L12.584 4.37598L5.58395 9.04298L6.41605 10.291ZM12.584 9.04293L5.58402 13.7089L6.41598 14.9571L13.416 10.2911L12.584 9.04293ZM5.58395 14.957L12.584 19.624L13.416 18.376L6.41605 13.709L5.58395 14.957ZM19.584 9.04293L16.084 11.3759L16.916 12.6241L20.416 10.2911L19.584 9.04293ZM16.084 12.6241L19.584 14.9571L20.416 13.7089L16.916 11.3759L16.084 12.6241Z"
+                      fill="currentColor"
+                    />
+                  </g>
+                </>
+              </svg>
+            </button>
+          )
+        }
+      </div>
+      <div id="html-editor" class="editor active">{initialHtml}</div>
+      <div id="css-editor" class="editor hidden">{initialCss}</div>
+      <div id="js-editor" class="editor hidden">{initialJs}</div>
     </div>
-    <div id="html-editor" class="editor active">{initialHtml}</div>
-    <div id="css-editor" class="editor hidden">{initialCss}</div>
-    <div id="js-editor" class="editor hidden">{initialJs}</div>
+    <div class="row-span-3 flex flex-col bg-black">
+      <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">
+        Preview
+      </h3>
+      <iframe class="flex-1 border-none"></iframe>
+    </div>
   </div>
-  <div class="row-span-3 flex flex-col bg-black">
-    <h3 class="bg-neutral-700 text-white text-sm font-bold px-4 py-3">
-      Preview
-    </h3>
-    <iframe class="flex-1 border-none"></iframe>
-  </div>
-</div>
+</form>
 
 <script>
   import { css } from "@codemirror/lang-css";
@@ -122,6 +186,10 @@ import { debounce } from "lodash-es";
         }, 400)
       : () => {};
 
+    const codepenDataInput = document.getElementById(
+      "codepen-data",
+    ) as HTMLInputElement;
+
     function updatePreview() {
       const htmlContent = htmlEditor.state.doc.toString();
       const cssContent = cssEditor.state.doc.toString();
@@ -131,9 +199,15 @@ import { debounce } from "lodash-es";
         <head><style>${cssContent}</style></head>
         <body>
           ${htmlContent}
-          <script>${jsContent}<\/script>
+          <script type="module">${jsContent}<\/script>
         </body>
       </html>`;
+
+      codepenDataInput.value = JSON.stringify({
+        html: htmlContent,
+        css: cssContent,
+        js: jsContent,
+      });
 
       preview.srcdoc = content.trim();
       saveToLocalStorage();
@@ -176,6 +250,10 @@ import { debounce } from "lodash-es";
 
   .tab {
     @apply text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
+  }
+
+  .codepen-btn {
+    @apply text-neutral-400 hover:text-white text-sm font-bold px-4 py-3 cursor-pointer h-auto;
   }
 
   .tab.active {
