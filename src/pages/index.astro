@@ -8,9 +8,7 @@ import projects from "../data/projects.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import createSlug from "../lib/createSlug";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const last_posts = posts.slice(0, 3);
 const last_projects = projects.slice(0, 3);
@@ -28,9 +26,8 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
     <div class="text-5xl font-bold">I'm Javi Aguilar</div>
     <div class="text-3xl py-3 font-bold">Full-Stack Software Engineer</div>
     <div class="py-2 text-lg">
-      📍 Berlin. Passionate about web technologies and crafting good user
-      experiences. I help teams launch successful products while experimenting
-      and exploring new technologies through many side projects.
+      📍 Berlin. Passionate about web technologies and crafting good user experiences. I help teams launch successful
+      products while experimenting and exploring new technologies through many side projects.
     </div>
     <div class="py-2 text-lg flex flex-wrap gap-2">
       <span class="badge badge-outline">JavaScript</span>
@@ -86,9 +83,7 @@ const hasMoreExperiments = experiments.length > last_experiments.length;
   }
 
   <div>
-    <div
-      class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}
-    >
+    <div class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}>
       Latest projects <Rocket class="inline-block" />
     </div>
   </div>

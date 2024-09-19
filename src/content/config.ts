@@ -12,15 +12,18 @@ const blogSchema = z.object({
       message: "tags must be unique",
     })
     .optional(),
+  customSlug: z.string().optional(),
 });
 
 const projectSchema = z.object({
   title: z.string(),
-  slug: z.string(),
   desc: z.string(),
   img: z.string(),
   url: z.string().optional(),
   badge: z.string().optional(),
+  pubDate: z.coerce.date(),
+  updatedDate: z.string().optional(),
+  customSlug: z.string().optional(),
 });
 
 const experimentSchema = z.object({
@@ -30,6 +33,7 @@ const experimentSchema = z.object({
   img: z.string(),
   codepenUser: z.string(),
   codepenId: z.string(),
+  customSlug: z.string().optional(),
 });
 
 export type BlogSchema = z.infer<typeof blogSchema>;
