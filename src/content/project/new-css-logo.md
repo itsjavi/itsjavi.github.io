@@ -5,16 +5,42 @@ desc_alt:
   "A redesigned CSS Logo, chosen by the community and the CSS-Next community group, a part of the W3C. The design
   includes many hat tips to CSS like rounded corners, tooltips and color pickers."
 img: "/projects/csslogo.webp"
-url: "https://codepen.io/itsjavi/pen/XWLwvxp"
 badge: "Design"
 customSlug: "new-css-logo"
 pubDate: "Sep 19 2024"
 updatedDate: "Sep 19 2024"
 ---
 
-I worked on the redesigned CSS Logo, proposed to the CSS-Next community group, a part of the W3C.
+<div class="mt-6 flex gap-4">
+  <a href="https://www.figma.com/design/wd0LiyCtqx0P1q4Mb9Sgxy/CSS-Logo?t=8esTF1lFbzdIoP6C-0" class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
+    View in Figma
+  </a>
+  <a href="https://codepen.io/itsjavi/pen/XWLwvxp" class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
+    View in Codepen
+  </a>
+  <a href="https://github.com/CSS-Next/css-next/issues/105#issuecomment-2287469583" class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
+    View proposal on Github
+  </a>
+</div>
 
-The design includes many hat tips to CSS like rounded corners, and elements like tooltips and color pickers.
+I worked on the redesigned CSS Logo, proposed to the
+[CSS-Next community group](https://lists.w3.org/Archives/Public/www-archive/2023Nov/att-0002/CSS-Next_Community_Group.pdf),
+a part of the W3C.
 
-The chosen web color is hotpink, which is the closest to the pink in the JS logo tetradic. Pink is also often related to
-makeup 💅, because CSS is the makeup of the web!
+The design includes many hat tips to CSS and web design:
+
+- Subtle rounded corners, making the logo resemble a tooltip / eye dropper / popup element.
+- Uses a known web color, <span class="text-[hotpink] font-mono">hotpink</span>. The color choice represents a color
+  from the JS logo tetradic scale. Pink is also often related to makeup 💅, and CSS is the makeup of the web!
+- The CSS version of the logo uses modern CSS features, like `font-variant` and `@container` queries.
+
+It also meets the following criteria:
+
+- Works well without color, in white and black.
+- Works with and without a version number (contains enough space to fit one).
+- It's legible and recognizable, in small and large sizes.
+- It's recognizable by color and shape, even if the text is too small (e.g. 12px and below).
+- It can be represented in both SVG and CSS-only formats.
+- It works well with existing community logos (JS, WebAssembly, etc) and brands (like Typescript).
+
+![](/projects/csslogo-infographic.png)
