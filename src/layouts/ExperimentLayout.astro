@@ -7,7 +7,7 @@ export interface Props extends ExperimentSchema {}
 
 const { title, desc, img, codepenUser, codepenId } = Astro.props;
 
-const fullTitle = title
+const fullTitle = title;
 ---
 
 <BaseLayout title={fullTitle} description={desc} image={img} ogType="article">

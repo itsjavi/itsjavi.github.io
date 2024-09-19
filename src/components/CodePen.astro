@@ -9,15 +9,7 @@ export interface Props {
   height?: string;
 }
 
-const {
-  penId,
-  title,
-  className,
-  height,
-  user = "itsjavi",
-  defaultTab = "result",
-  editable = "true",
-} = Astro.props;
+const { penId, title, className, height, user = "itsjavi", defaultTab = "result", editable = "true" } = Astro.props;
 ---
 
 <div class={`my-4 mt-8 ${className}`}>
@@ -31,15 +23,10 @@ const {
     style="height:{height};"
   >
     <span
-      >See the Pen <a href=`https://codepen.io/${user}/pen/${penId}`>
-        {title}</a
-      > by (<a href=`https://codepen.io/${user}`>@${user}</a>) on <a
-        href="https://codepen.io">CodePen</a
-      >.</span
+      >See the Pen <a href=`https://codepen.io/${user}/pen/${penId}`> {title}</a> by (<a
+        href=`https://codepen.io/${user}`>@${user}</a
+      >) on <a href="https://codepen.io">CodePen</a>.</span
     >
   </div>
-  <script
-    is:inline
-    async
-    src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+  <script is:inline async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 </div>

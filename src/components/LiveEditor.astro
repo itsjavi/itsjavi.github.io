@@ -48,14 +48,10 @@ const {
   />
 
   <div class={`grid grid-rows-5 flex-1 w-full h-full border border-gray-700`}>
-    <div
-      class="row-span-2 flex flex-col bg-gray-900 border-b border-gray-700 max-w-full editors-container"
-    >
+    <div class="row-span-2 flex flex-col bg-gray-900 border-b border-gray-700 max-w-full editors-container">
       <div class="flex justify-between bg-gray-700">
         <div class="flex flex-row">
-          <button type="button" class="tab active" data-target="html"
-            >HTML</button
-          >
+          <button type="button" class="tab active" data-target="html">HTML</button>
           <button type="button" class="tab" data-target="css">CSS</button>
           <button type="button" class="tab" data-target="js">JS</button>
         </div>
@@ -100,12 +96,8 @@ const {
       <div class="css-editor editor hidden">{initialCss}</div>
       <div class="js-editor editor hidden">{initialJs}</div>
     </div>
-    <div
-      class={`${expandedEditors ? "row-span-3" : "row-span-5"} flex flex-col bg-black preview-container`}
-    >
-      <div
-        class="bg-gray-700 text-white text-sm font-bold px-4 py-3 flex justify-between items-center"
-      >
+    <div class={`${expandedEditors ? "row-span-3" : "row-span-5"} flex flex-col bg-black preview-container`}>
+      <div class="bg-gray-700 text-white text-sm font-bold px-4 py-3 flex justify-between items-center">
         <h3>
           <div class="flex flex-row gap-2">
             <span class="preview-title" contenteditable="false" tabindex={"0"}>
@@ -116,11 +108,7 @@ const {
           </div>
         </h3>
         <div>
-          <button
-            title="Toggle editors"
-            type="button"
-            class="toggle-edit-btn text-gray-400 hover:text-white px-2"
-          >
+          <button title="Toggle editors" type="button" class="toggle-edit-btn text-gray-400 hover:text-white px-2">
             <ChevronsDownUp size={16} class={expandedEditors ? "" : "hidden"} />
             <Edit size={16} class={expandedEditors ? "hidden" : ""} />
           </button>
@@ -133,30 +121,21 @@ const {
 
 <script>
   import { css } from "@codemirror/lang-css";
-import { html } from "@codemirror/lang-html";
-import { javascript } from "@codemirror/lang-javascript";
-import type { Extension } from "@codemirror/state";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { EditorView, basicSetup } from "codemirror";
-import { debounce } from "lodash-es";
+  import { html } from "@codemirror/lang-html";
+  import { javascript } from "@codemirror/lang-javascript";
+  import type { Extension } from "@codemirror/state";
+  import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+  import { EditorView, basicSetup } from "codemirror";
+  import { debounce } from "lodash-es";
 
-  function createEditor(
-    editorContainer: Element,
-    selector: string,
-    langExtension: Extension,
-  ) {
+  function createEditor(editorContainer: Element, selector: string, langExtension: Extension) {
     const editorElement = editorContainer.querySelector(selector)!;
     const initialCode = editorElement.textContent || "";
     editorElement.textContent = "";
 
     const codeEditor = new EditorView({
       doc: initialCode,
-      extensions: [
-        basicSetup,
-        langExtension,
-        vscodeDark,
-        EditorView.lineWrapping,
-      ],
+      extensions: [basicSetup, langExtension, vscodeDark, EditorView.lineWrapping],
       parent: editorElement,
     });
 
@@ -166,9 +145,7 @@ import { debounce } from "lodash-es";
   function setupEditor(editorContainer: Element) {
     editorContainer.classList.remove("live-editor--static");
 
-    const jsonDataInput = editorContainer.querySelector(
-      ".codepen-data",
-    ) as HTMLInputElement;
+    const jsonDataInput = editorContainer.querySelector(".codepen-data") as HTMLInputElement;
 
     jsonDataInput.addEventListener("input", (e) => {
       console.log((e.target as HTMLInputElement).value);
@@ -185,22 +162,12 @@ import { debounce } from "lodash-es";
     const cssEditor = createEditor(editorContainer, ".css-editor", css());
     const jsEditor = createEditor(editorContainer, ".js-editor", javascript());
 
-    const preview = editorContainer.querySelector(
-      "iframe",
-    ) as HTMLIFrameElement;
+    const preview = editorContainer.querySelector("iframe") as HTMLIFrameElement;
 
-    const editorsContainer = editorContainer.querySelector(
-      ".editors-container",
-    ) as HTMLElement;
-    const previewContainer = editorContainer.querySelector(
-      ".preview-container",
-    ) as HTMLElement;
-    const toggleEditBtn = editorContainer.querySelector(
-      ".toggle-edit-btn",
-    ) as HTMLButtonElement;
-    const previewTitle = editorContainer.querySelector(
-      ".preview-title",
-    ) as HTMLHeadingElement;
+    const editorsContainer = editorContainer.querySelector(".editors-container") as HTMLElement;
+    const previewContainer = editorContainer.querySelector(".preview-container") as HTMLElement;
+    const toggleEditBtn = editorContainer.querySelector(".toggle-edit-btn") as HTMLButtonElement;
+    const previewTitle = editorContainer.querySelector(".preview-title") as HTMLHeadingElement;
 
     const storageKey = editorContainer.getAttribute("data-storage-key");
     // Load saved content from localStorage if storageKey is provided
@@ -228,8 +195,7 @@ import { debounce } from "lodash-es";
       : (_data: string) => {};
 
     // Set initial editors visibility
-    const initialExpandedState =
-      editorContainer.getAttribute("data-expanded-editors") === "true";
+    const initialExpandedState = editorContainer.getAttribute("data-expanded-editors") === "true";
     editorsContainer.style.display = initialExpandedState ? "flex" : "none";
     updateToggleButtonIcon(initialExpandedState);
 
@@ -281,15 +247,11 @@ import { debounce } from "lodash-es";
 
     function updateToggleButtonIcon(isExpanded: boolean) {
       if (isExpanded) {
-        toggleEditBtn
-          .querySelector("svg:first-child")!
-          .classList.remove("hidden");
+        toggleEditBtn.querySelector("svg:first-child")!.classList.remove("hidden");
         toggleEditBtn.querySelector("svg:last-child")!.classList.add("hidden");
       } else {
         toggleEditBtn.querySelector("svg:first-child")!.classList.add("hidden");
-        toggleEditBtn
-          .querySelector("svg:last-child")!
-          .classList.remove("hidden");
+        toggleEditBtn.querySelector("svg:last-child")!.classList.remove("hidden");
       }
     }
 
@@ -341,9 +303,7 @@ import { debounce } from "lodash-es";
         tabs.forEach((t) => t.classList.remove("active"));
         editors.forEach((e) => e.classList.add("hidden"));
         tab.classList.add("active");
-        editorContainer
-          .querySelector(`.${target}-editor`)
-          ?.classList.remove("hidden");
+        editorContainer.querySelector(`.${target}-editor`)?.classList.remove("hidden");
       });
     });
     updatePreview();

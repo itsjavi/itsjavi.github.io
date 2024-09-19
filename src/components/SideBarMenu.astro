@@ -5,23 +5,23 @@ import { CodeSquare } from "lucide-astro";
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
-    <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
-    <li hidden><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
-    <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
-    <li><a class="py-3 text-base" id="experiments" href="/experiments">Experiments</a></li>
-    <li><a class="py-3 text-base" id="editor" href="/editor"><CodeSquare /> Editor</a></li>
-    <li hidden><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
-    <li hidden>
-        <a
-            class="py-3 text-base"
-            href="https://x.com/itsjavidev"
-            target="_blank"
-            referrerpolicy="no-referrer-when-downgrade">Contact</a
-        >
-    </li>
+  <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
+  <li hidden><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
+  <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
+  <li><a class="py-3 text-base" id="experiments" href="/experiments">Experiments</a></li>
+  <li><a class="py-3 text-base" id="editor" href="/editor"><CodeSquare /> Editor</a></li>
+  <li hidden><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
+  <li hidden>
+    <a
+      class="py-3 text-base"
+      href="https://x.com/itsjavidev"
+      target="_blank"
+      referrerpolicy="no-referrer-when-downgrade">Contact</a
+    >
+  </li>
 </ul>
 
 <script is:inline define:vars={{ sideBarActiveItemID: sideBarActiveItemID, activeClass: activeClass }}>
-const activeItemElem = document.getElementById(sideBarActiveItemID);
-activeItemElem && activeItemElem.classList.add(activeClass);
+  const activeItemElem = document.getElementById(sideBarActiveItemID);
+  activeItemElem && activeItemElem.classList.add(activeClass);
 </script>

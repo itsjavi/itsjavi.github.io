@@ -3,8 +3,7 @@ import NoTransitionsLayout from "@layouts/NoTransitionsLayout.astro";
 import LiveEditor from "../components/LiveEditor.astro";
 
 const title = "Live Code Editor for HTML/CSS/JS";
-const description =
-  "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
+const description = "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
 ---
 
 <NoTransitionsLayout
@@ -18,8 +17,8 @@ const description =
       <h1 class="text-3xl w-full font-bold mb-5">Live Code Editor</h1>
       <div class="divider my-2"></div>
       <p>
-        {description} It uses CodeMirror under the hood. Edits are persisted to local
-        storage. Optionally, you can easily export your code to CodePen.
+        {description} It uses CodeMirror under the hood. Edits are persisted to local storage. Optionally, you can easily
+        export your code to CodePen.
       </p>
       <div class="py-2 text-lg flex flex-wrap gap-2">
         <span class="badge badge-outline">Astro</span>
@@ -37,9 +36,7 @@ const description =
       expandedEditors={true}
     />
     <div class="flex flex-row gap-2">
-      <a class="btn btn-neutral btn-outline" href="/editor/fullscreen">
-        Go Fullscreen
-      </a>
+      <a class="btn btn-neutral btn-outline" href="/editor/fullscreen"> Go Fullscreen </a>
       <a
         class="btn btn-neutral"
         href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
