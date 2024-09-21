@@ -41,7 +41,7 @@
     "prettier": "^3.3.3",
     "sort-package-json": "^2.10.1"
   },
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@9.11.0",
   "engines": {
     "node": ">=20.5.0"
   }
