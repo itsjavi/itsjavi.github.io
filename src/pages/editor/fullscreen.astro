@@ -1,4 +1,5 @@
 ---
+import ThirdParties from "@components/ThirdParties.astro";
 import BaseHead from "../../components/BaseHead.astro";
 import LiveEditor from "../../components/LiveEditor.astro";
 
@@ -11,6 +12,7 @@ const image = "/experiments/live-editor.webp";
 <html lang="en" data-theme="lofi">
   <head>
     <BaseHead title={title} description={description} image={image} />
+    <ThirdParties />
   </head>
   <body class="w-screen h-screen bg-base-100">
     <LiveEditor

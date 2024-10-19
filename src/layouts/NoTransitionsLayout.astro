@@ -1,4 +1,5 @@
 ---
+import ThirdParties from "@components/ThirdParties.astro";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
@@ -20,6 +21,7 @@ const {
 <html lang="en" data-theme="lofi">
   <head>
     <BaseHead title={title} description={description} image={image} ogType={ogType} />
+    <ThirdParties />
   </head>
   <body>
     <div class="bg-base-100 drawer lg:drawer-open">
