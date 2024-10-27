@@ -5,7 +5,7 @@ import BaseLayout from "./BaseLayout.astro";
 
 export interface Props extends ProjectSchema {}
 
-const { title, desc, img, url, badge } = Astro.props;
+const { title, desc, img, badge } = Astro.props;
 
 const fullTitle = title;
 ---
@@ -31,15 +31,6 @@ const fullTitle = title;
       <div>
         <slot />
       </div>
-      {
-        url && (
-          <div class="mt-6">
-            <a href={url} class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
-              Visit Project
-            </a>
-          </div>
-        )
-      }
     </article>
   </main>
 </BaseLayout>

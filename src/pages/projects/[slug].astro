@@ -1,4 +1,5 @@
 ---
+import GiscusComments from "@components/GiscusComments.astro";
 import { createSlugV2 } from "@lib/createSlug";
 import { type CollectionEntry, getCollection } from "astro:content";
 import { type ProjectSchema } from "../../content/config";
@@ -31,4 +32,14 @@ const { Content } = await entry.render();
   updatedDate={entryData.updatedDate}
 >
   <Content />
+  {
+    entryData.url && (
+      <div class="mt-6">
+        <a href={entryData.url} class="btn btn-gray btn-outline" target="_blank" rel="noopener noreferrer">
+          Visit Project
+        </a>
+      </div>
+    )
+  }
+  <GiscusComments />
 </ProjectLayout>

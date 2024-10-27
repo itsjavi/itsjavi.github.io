@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import { type BlogSchema } from "../../content/config";
 import PostLayout from "../../layouts/PostLayout.astro";
 import createSlug from "../../lib/createSlug";
+import GiscusComments from "@components/GiscusComments.astro";
 
 export async function getStaticPaths() {
   const postEntries = await getCollection("blog");
@@ -31,4 +32,5 @@ const { Content } = await entry.render();
   tags={post.tags}
 >
   <Content />
+  <GiscusComments />
 </PostLayout>
