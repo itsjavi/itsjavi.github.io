@@ -1,7 +1,7 @@
 ---
 title: "New CSS Logo"
 desc: "I created a new CSS Logo, and proposed it to the CSS-Next community group (a part of the W3C)."
-img: "/projects/csslogo.webp"
+img: "/projects/csslogo-final-banner.webp"
 badge: "Design"
 customSlug: "new-css-logo"
 pubDate: "Sep 19 2024"
@@ -9,6 +9,14 @@ updatedDate: "Sep 19 2024"
 ---
 
 <div class="mt-6 flex gap-4 flex-col sm:flex-row items-start">
+  <a
+    href="https://github.com/CSS-Next/logo.css"
+    class="btn btn-gray btn-outline"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    View on Github
+  </a>
   <a
     href="https://www.figma.com/design/wd0LiyCtqx0P1q4Mb9Sgxy/CSS-Logo?t=8esTF1lFbzdIoP6C-0"
     class="btn btn-gray btn-outline"
@@ -18,20 +26,12 @@ updatedDate: "Sep 19 2024"
     View in Figma
   </a>
   <a
-    href="https://codepen.io/itsjavi/pen/XWLwvxp"
+    href="https://codepen.io/argyleink/pen/jOgZpmy"
     class="btn btn-gray btn-outline"
     target="_blank"
     rel="noopener noreferrer"
   >
     View in Codepen
-  </a>
-  <a
-    href="https://github.com/CSS-Next/css-next/issues/105#issuecomment-2287469583"
-    class="btn btn-gray btn-outline"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    View proposal on Github
   </a>
 </div>
 
@@ -41,10 +41,16 @@ a part of the W3C.
 
 The design includes many hat tips to CSS and web design:
 
-- Subtle rounded corners, making the logo resemble a tooltip / eye dropper / popup element.
-- Uses a known web color, <span class="text-[hotpink] font-mono">hotpink</span>. The color choice represents a color
-  from the JS logo tetradic scale. Pink is also often related to makeup 💅, and CSS is the makeup of the web!
+- Subtle rounded corners, making the logo resemble a tooltip / eye dropper / popup element. Referencing two
+of the things that were once hard to style in pure CSS: rounded corners and popovers. Now
+thanks to new specs like [Anchor Positioning](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning), 
+that's easier than ever.
 - The CSS version of the logo uses modern CSS features, like `font-variant` and `@container` queries.
+- Uses known web colors, like <span class="bg-[hotpink] text-black p-1 font-mono">hotpink</span> (original proposal) or 
+<span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span> (final version).
+
+{/* - Uses a known web color, <span class="text-[hotpink] font-mono">hotpink</span>. The color choice represents a color
+  from the JS logo tetradic scale. Pink is also often related to makeup 💅, and CSS is the makeup of the web! */}
 
 It also meets the following criteria:
 
@@ -56,3 +62,22 @@ It also meets the following criteria:
 - It works well with existing community logos (JS, WebAssembly, etc) and brands (like Typescript).
 
 ![](/projects/csslogo-infographic.png)
+> Infographic of the original proposal, using hotpink. The color choice represents a color
+  from the JS logo tetradic scale. Pink is also often related to makeup 💅, and CSS is the makeup of the web!
+
+## Final version
+
+In the final version, and by popular vote, we opted to change the font to 
+[Dinish Condensed Heavy](https://github.com/playbeing/dinish) and the color to 
+<span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span>, since it's a known web color that 
+has a beautiful and 
+[meaningful story behind it](https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/).
+
+<img src="/projects/csslogo-final.png" alt="CSS Logo Final Version" class="w-72 h-auto aspect-square max-w-full" />
+
+Special thanks to [Adam Argyle](https://nerdy.dev/) for helping me with the different iterations of the logo, and 
+helping with the community feedback and final version.
+
+Thanks also to everyone who participated with their cool ideas and feedback,
+and also big thanks to the CSS-Next group for being so welcoming and helpful, and choosing my proposal
+as the final candidate!
