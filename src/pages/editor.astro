@@ -2,7 +2,7 @@
 import NoTransitionsLayout from "@layouts/NoTransitionsLayout.astro";
 import LiveEditor from "../components/LiveEditor.astro";
 
-const title = "Live Code Editor for HTML/CSS/JS";
+const title = "Live HTML/CSS/JS Code Editor similar to CodePen, built with Astro";
 const description = "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
 ---
 
@@ -25,6 +25,16 @@ const description = "A client-side live code editor for HTML, CSS, and JavaScrip
         <span class="badge badge-outline">TypeScript</span>
       </div>
     </div>
+    <div class="flex flex-row gap-2">
+      <a
+        class="btn btn-neutral"
+        href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View component on GitHub
+      </a>
+    </div>
     <LiveEditor
       class="h-[500px]"
       title="hello-world.html"
@@ -36,15 +46,7 @@ const description = "A client-side live code editor for HTML, CSS, and JavaScrip
       expandedEditors={true}
     />
     <div class="flex flex-row gap-2">
-      <a class="btn btn-neutral btn-outline" href="/editor/fullscreen"> Go Fullscreen </a>
-      <a
-        class="btn btn-neutral"
-        href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        View code on GitHub
-      </a>
+      <a class="btn btn-neutral btn-outline" href="/editor/fullscreen">Go Fullscreen</a>
     </div>
   </main>
 </NoTransitionsLayout>
