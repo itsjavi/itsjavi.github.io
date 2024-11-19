@@ -1,6 +1,8 @@
 ---
-title: "New CSS Logo"
-desc: "I created a new CSS Logo, and proposed it to the CSS-Next community group (a part of the W3C)."
+title: "The New CSS Logo and the story behind its design"
+desc:
+  "I proposed a new CSS Logo and became the official one. This is the story of how it happened and the thoughts behind
+  the design."
 img: "/projects/csslogo-final-banner.webp"
 badge: "Design"
 customSlug: "new-css-logo"
@@ -19,72 +21,95 @@ updatedDate: "Sep 19 2024"
   </a>
 </div>
 
-Months ago I saw on social media that the
-[CSS-Next community group](https://lists.w3.org/Archives/Public/www-archive/2023Nov/att-0002/CSS-Next_Community_Group.pdf),
-(a part of the W3C) was asking the community to propose new logo for CSS. After some thoughs I already had an idea in
-mind, so I decided to give it a shot and post it on the GitHub thread as a proposal, with many variants so people could
-choose their favorite.
+In August 2024, I saw on social media that the
+[CSS-Next community group](https://lists.w3.org/Archives/Public/www-archive/2023Nov/att-0002/CSS-Next_Community_Group.pdf)
+(a part of the W3C) was asking the community to propose a new logo for CSS. After giving it some thought, I came up with
+a few ideas.
 
-Months later, while I was in the airport waiting for my flight back home, I saw that the CSS-Next group had chosen my
-proposal as the final version because it was the most voted one! It made me very happy and I quickly accepted the task
-of preparing the final version in different formats, together with Adam Argyle from Google.
+I then decided to give it a shot and submitted my proposal on the
+[GitHub thread](https://github.com/CSS-Next/css-next/issues/105#issuecomment-2287469583), including multiple variants
+for the community to choose their favorite.
 
-We iterated a lot creating many variants and versions on Figma, listening to the community feedback on Mastodon, Bluesky
-and Twitter (now called X), and ended up with the final version that you can see at the end of this post.
+A month later, while waiting for my flight back to Berlin at the airport, I saw that the CSS-Next group had selected my
+proposal as the final version! It was also the most voted option by the community.
 
-The design includes many nods to CSS and web design:
+I was thrilled and quickly accepted the task of preparing the final version in various formats with the help of Adam
+Argyle from Google. I remember opening my laptop during the flight to iterate on the design, and polishing it for a few
+hours.
 
-- Subtle rounded corners, making the logo resemble a tooltip / eye dropper / popup element. Referencing two of the
-  things that were once hard to style in pure CSS: rounded corners and popovers. Now thanks to new specs like
+After that we iterated extensively, creating many revisions and variants on Figma, incorporating community feedback from
+GitHub, Mastodon, Bluesky, and Twitter (now X). Eventually after a couple of months, we finalized the logo, which you
+can see at the end of this post.
+
+## Design Features
+
+The design incorporates several nods to CSS and web design:
+
+- **Subtle rounded corners**: The logo resembles a tooltip or popup element, referencing challenges CSS developers used
+  to face with styling such elements. Thanks to modern specs like
   [Anchor Positioning](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning) and the HTML Popover
-  API, that's easier than ever.
-- The HTML/CSS version of the logo uses modern CSS features, like `font-variant` and `@container` queries.
-- Uses known web colors, such as <span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span> (final
-  version) or <span class="bg-[hotpink] text-black p-1 font-mono">hotpink</span> (original proposal).
-- It is timeless and accessible, and can work well in different formats.
+  API, such tasks are now much easier. So it represents the evolution of CSS in web design.
+- **Modern CSS features**: The [HTML/CSS version](https://codepen.io/argyleink/pen/qBegwRB) of the logo uses modern
+  features like `@container` queries.
+- **Familiar web colors**: The logo prominently features well-known web colors such as
+  <span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span> (final version) and
+  <span class="bg-[hotpink] text-black p-1 font-mono">hotpink</span> (original proposal).
+- **Timeless and accessible**: The design is versatile and works well across different formats and media. CSS is not a
+  brand, but a technology and I also wanted to represent that through the simplicity of the design.
+- **Harmonizes with the other logos**: The design is recognizable and works well with the logos of the other
+  technologies of the Web like [JS](https://github.com/voodootikigod/logo.js) and
+  [WebAssembly](https://github.com/WebAssembly/logo.webassembly).
 
-It also had to meet the following criteria:
+### Design Criteria
 
-- Works well without color, in white and black.
-- Works with and without a version number (contains enough space to fit one).
-- It's legible and recognizable, in small and large sizes.
-- It's recognizable by color and shape, even if the text is too small (e.g. 12px and below).
-- It can be represented in both SVG and CSS-only formats.
-- It works well with existing community logos (JS, WebAssembly, etc) and brands (like Typescript).
+The logo submission had to meet the following requirements:
 
-![](/projects/csslogo-infographic2.webp)
+- Works well in monochrome (black and white).
+- Is functional with and without a version number.
+- Maintains legibility and recognizability at small and large sizes.
+- Is identifiable by color and shape, even at very small text sizes (e.g., 12px).
+- Can be represented in both SVG and CSS-only formats.
+- Harmonizes with existing community logos (e.g., JS, WebAssembly) and other brands (e.g., TypeScript).
 
-> Infographic of the original proposal, using hotpink. The color choice represents a color from the JS logo's tetradic
-> scale. Pink is also often related to makeup 💅, and CSS is the makeup of the web!
+![Infographic of the original proposal using hotpink](/projects/csslogo-infographic2.webp)
 
-## Final version
+> Infographic of the original proposal using hotpink. I chose the pink color as part of the JS logo's tetradic color
+> scheme. Pink is also often associated with makeup 💅, and CSS is often considered the "makeup" of the web!
 
-In the final version we opted to use an Open Source font: [Dinish Condensed Heavy](https://github.com/playbeing/dinish).
+As you can see in my original CSS logo proposal, I also played with the idea of a new logo for `HTML`, with a color that
+would harmonize with the rest. Maybe it's also time for a new logo for `HTML`?
 
-The Working Group also preferred the <span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span>
-color over hotpink, another known web color but with a beautiful and
-[meaningful story behind it](https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/).
+## Final Version
 
-This shade of purple honors Rebecca Alison Meyer, the late daughter of Eric Meyer, a pioneer in web development.
+In the final version, we opted to use an open-source font: [Dinish Condensed Heavy](https://github.com/playbeing/dinish)
+and also proposed a color change to `rebeccapurple`.
+
+The Working Group preferred <span class="bg-[rebeccapurple] text-white p-1 font-mono">rebeccapurple</span> over the
+original hotpink, a meaningful choice tied to a
+[beautiful but also sad story](https://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/).
+
+This shade of purple honors Rebecca Alison Meyer, the daughter of Eric Meyer, a pioneer in CSS and web development.
 Rebecca's love for purple and her vibrant spirit inspired the web community to memorialize her in 2014 by officially
-naming `#663399` "rebeccapurple" in CSS. Initially proposed as 'beccapurple,' Eric shared that Rebecca, upon turning
-six, preferred to be called 'Rebecca' instead of 'Becca,' leading to the name 'rebeccapurple.' It’s a symbol of love,
+naming `#663399` as "rebeccapurple" in CSS. Initially proposed as "beccapurple," Eric shared that Rebecca, upon turning
+six, preferred to be called "Rebecca" instead of "Becca," leading to the name "rebeccapurple." It's a symbol of love,
 loss, and the unbreakable ties that bind us, even across the vastness of the web.
 
-Fast forward to today, the new CSS logo carries this legacy forward. It’s not just a design refresh - it’s a beacon of
-community, empathy, and the humanity within tech. A world where we celebrate progress, but never forget the stories that
-shape us.
+Fast forward to today, the new CSS logo carries this legacy forward honoring her 10 years later. It's more than just a
+design refresh, it's a beacon of community, empathy, and humanity within tech. While celebrating the progress of CSS and
+the tech community, we also honor the stories that shape us.
 
-After a [popular vote](https://github.com/CSS-Next/css-next/issues/105#issuecomment-2445341089), and also considering
-blue colors, the community chose `rebeccapurple` with 420+ votes in favor.
+After a [popular vote](https://github.com/CSS-Next/css-next/issues/105#issuecomment-2445341089) (with more than 460
+votes in favor), the community chose `rebeccapurple` as the final color together with the final design.
 
-<img src="/projects/csslogo-final.png" alt="CSS Logo Final Version" class="w-72 h-auto aspect-square max-w-full" />
+![CSS Logo Final Version](/projects/csslogo-final.png)
 
-Special thanks to [Adam Argyle](https://nerdy.dev/) for helping me with the different iterations of the logo, with the
-HTML/CSS version, and helping with the community feedback and final version.
+## Acknowledgments
 
-Thanks also to everyone who participated with their cool ideas and feedback, and also big thanks to the CSS-Next group
-for being so welcoming and helpful, and choosing my proposal as the final candidate!
+Special thanks to [Adam Argyle](https://nerdy.dev/) for assisting with the iterations, the HTML/CSS version, and
+community feedback.
 
-You can view and download the final version in different formats (images, SVG, CSS, etc.) on
-[Github](https://github.com/CSS-Next/logo.css).
+I also want to thank everyone who contributed their ideas and feedback, and a big thank you to the CSS-Next group for
+being so welcoming and choosing my proposal as the final candidate!
+
+You can view and download the final version in various formats (images, SVG, CSS, etc.) on
+[GitHub](https://github.com/CSS-Next/logo.css).
