@@ -3,7 +3,7 @@ const blogSchema = z.object({
   title: z.string(),
   description: z.string(),
   pubDate: z.coerce.date(),
-  updatedDate: z.string().optional(),
+  updatedDate: z.coerce.date().optional(),
   heroImage: z.string().optional(),
   badge: z.string().optional(),
   tags: z
@@ -22,7 +22,7 @@ const projectSchema = z.object({
   url: z.string().optional(),
   badge: z.string().optional(),
   pubDate: z.coerce.date(),
-  updatedDate: z.string().optional(),
+  updatedDate: z.coerce.date().optional(),
   customSlug: z.string().optional(),
 });
 
