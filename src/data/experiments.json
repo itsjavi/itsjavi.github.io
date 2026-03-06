@@ -1,5 +1,14 @@
 [
   {
+    "slug": "css-only-pokeballs",
+    "title": "CSS-only Pokéballs",
+    "desc": "Pokéballs drawn with pure CSS using a single custom HTML element. No extra divs, just gradients, borders, and math functions.",
+    "img": "/experiments/css-pokeballs.webp",
+    "codepenId": "pvbrxzR",
+    "codepenUser": "itsjavi",
+    "url": "https://codepen.io/itsjavi/pen/pvbrxzR"
+  },
+  {
     "slug": "glassmorphic-button-with-gradient-borders",
     "title": "Glassmorphic Button with Gradient Borders",
     "desc": "Button in glassmorphism style with animated gradient borders. This experiment demonstrates how to combine backdrop blur, transparencies, animated custom properties and CSS masks to achieve gradient borders.",
