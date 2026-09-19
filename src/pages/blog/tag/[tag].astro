@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import ContentCard from "../../../components/ContentCard.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((post) => post.data.tags.includes(tag))
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+interface Props {
+  tag: string;
+  posts: CollectionEntry<"blog">[];
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`${tag} posts | Javi Aguilar`} sideBarActiveItemID="blog">
+  <h1 class="mb-5 text-3xl font-bold">Posts tagged “{tag}”</h1>
+  <div class="divide-y divide-base-content/10">
+    {posts.map((post) => (
+      <div class="py-2">
+        <ContentCard
+          title={post.data.title}
+          image={post.data.heroImage}
+          description={post.data.description}
+          href={`/blog/${post.id}`}
+          badge={post.data.badge}
+          tags={post.data.tags}
+          tagHrefPrefix="/blog/tag"
+        />
+      </div>
+    ))}
+  </div>
+</BaseLayout>

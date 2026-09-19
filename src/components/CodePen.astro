@@ -1,32 +1,66 @@
 ---
-export interface Props {
-  penId?: string;
-  user?: string;
-  title?: string;
-  defaultTab?: "result" | "html" | "css" | "js";
-  editable?: "true" | "false";
-  className?: string;
+interface Props {
+  user: string;
+  penId: string;
+  title: string;
   height?: string;
 }
-
-const { penId, title, className, height, user = "itsjavi", defaultTab = "result", editable = "true" } = Astro.props;
+const { user, penId, title, height = "480" } = Astro.props;
+const url = `https://codepen.io/${encodeURIComponent(user)}/pen/${encodeURIComponent(penId)}`;
 ---
 
-<div class={`my-4 mt-8 ${className}`}>
-  <div
-    class={`codepen box-border flex items-center justify-center border-2 rounded-md p-4`}
+<codepen-embed class="block">
+  <p
+    class="codepen flex items-center justify-center rounded-md border-2 p-4"
     data-height={height}
-    data-default-tab={defaultTab}
+    data-theme-id="dark"
+    data-default-tab="result"
     data-slug-hash={penId}
     data-user={user}
-    data-editable={editable}
-    style="height:{height};"
+    data-editable="true"
+    data-title={title}
   >
-    <span
-      >See the Pen <a href=`https://codepen.io/${user}/pen/${penId}`> {title}</a> by (<a
-        href=`https://codepen.io/${user}`>@${user}</a
-      >) on <a href="https://codepen.io">CodePen</a>.</span
-    >
-  </div>
-  <script is:inline async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
-</div>
+    <span>
+      See the Pen <a href={url}>{title}</a> by (
+      <a href={`https://codepen.io/${encodeURIComponent(user)}`}>@{user}</a>) on{" "}
+      <a href="https://codepen.io">CodePen</a>.
+    </span>
+  </p>
+</codepen-embed>
+
+<script>
+  let loading: Promise<void> | undefined;
+  function loadCodePen() {
+    loading ??= new Promise<void>((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cpwebassets.codepen.io/assets/embed/ei.js";
+      script.async = true;
+      script.addEventListener("load", () => resolve(), { once: true });
+      script.addEventListener(
+        "error",
+        () => {
+          script.remove();
+          loading = undefined;
+          reject(new Error("CodePen unavailable"));
+        },
+        { once: true },
+      );
+      document.head.append(script);
+    });
+    return loading;
+  }
+  class CodePenEmbed extends HTMLElement {
+    connectedCallback() {
+      void loadCodePen()
+        .then(() => {
+          if (!this.isConnected || this.querySelector("iframe")) return;
+          const embedWindow = window as Window & { __CPEmbed?: (selector?: string) => void };
+          embedWindow.__CPEmbed?.();
+        })
+        .catch(() => {
+          /* The authored link remains usable when the embed service is unavailable. */
+        });
+    }
+  }
+  if (!customElements.get("codepen-embed")) customElements.define("codepen-embed", CodePenEmbed);
+</script>

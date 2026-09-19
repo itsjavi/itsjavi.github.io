@@ -1,0 +1,13 @@
+---
+import SidebarContent from "./SidebarContent.astro";
+
+export interface Props {
+  activeItem?: string;
+}
+
+const { activeItem } = Astro.props;
+---
+
+<aside class="fixed inset-y-0 left-0 hidden w-[19rem] overflow-y-auto bg-base-200 lg:block">
+  <SidebarContent activeItem={activeItem} />
+</aside>

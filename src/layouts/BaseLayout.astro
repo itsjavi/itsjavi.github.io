@@ -1,43 +1,52 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/Header.astro";
-import SideBar from "../components/SideBar.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteSidebar from "../components/SiteSidebar.astro";
+import ThirdParties from "../components/ThirdParties.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../config";
 
-import ThirdParties from "@components/ThirdParties.astro";
-import { SITE_DESCRIPTION, SITE_TITLE, TRANSITION_API } from "../config";
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  ogType?: string;
+  sideBarActiveItemID?: string;
+  includeSidebar?: boolean;
+  wide?: boolean;
+  transitions?: boolean;
+}
 
 const {
-  image,
   title = SITE_TITLE,
   description = SITE_DESCRIPTION,
-  includeSidebar = true,
-  sideBarActiveItemID,
+  image,
   ogType,
+  sideBarActiveItemID,
+  includeSidebar = true,
+  wide = false,
+  transitions = true,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="lofi">
+<html lang="en" data-theme="site">
   <head>
-    <BaseHead title={title} description={description} image={image} ogType={ogType} />
-    {TRANSITION_API && <ViewTransitions />}
+    <BaseHead {title} {description} {image} {ogType} />
+    {transitions && <ClientRouter />}
     <ThirdParties />
   </head>
-  <body>
-    <div class="bg-base-100 drawer lg:drawer-open">
-      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content bg-base-100">
-        <Header title={SITE_TITLE} />
-        <div class="md:flex md:justify-center">
-          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw] flex-1">
-            <slot />
-          </main>
-        </div>
-        <Footer />
+  <body class="min-h-screen bg-base-100 text-base-content">
+    {includeSidebar && <SiteSidebar activeItem={sideBarActiveItemID} />}
+    <div class:list={["min-h-screen", { "lg:pl-[19rem]": includeSidebar }]}>
+      <SiteHeader activeItem={sideBarActiveItemID} />
+      <div class="flex justify-center">
+        <main class:list={["w-full flex-1 px-6 pb-6 pt-10", wide ? "max-w-none" : "max-w-[900px]"]}>
+          <slot />
+        </main>
       </div>
-      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
+      <SiteFooter />
     </div>
   </body>
 </html>

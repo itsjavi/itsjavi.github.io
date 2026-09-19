@@ -1,0 +1,53 @@
+---
+export interface Props {
+  title: string;
+  image?: string;
+  description: string;
+  href: string;
+  badge?: string;
+  tags?: string[];
+  tagHrefPrefix?: string;
+}
+
+const { title, image, description, href, badge, tags = [], tagHrefPrefix } = Astro.props;
+---
+
+<article class="relative flex flex-col gap-4 rounded-box bg-base-100 p-4 transition duration-200 hover:scale-[1.02] hover:shadow-xl md:flex-row md:items-center">
+  {image && (
+    <img
+      src={image}
+      width="750"
+      height="422"
+      alt=""
+      loading="lazy"
+      class="aspect-[750/422] w-full rounded-box border border-base-content/35 object-cover md:w-52"
+    />
+  )}
+  <div class="min-w-0 grow">
+    <h2 class="text-xl font-bold">
+      <a href={href} class="after:absolute after:inset-0 after:content-['']">
+        {title}
+      </a>
+      {badge && (
+        <span class="badge badge-sm badge-outline ml-2 rounded-full align-middle">{badge}</span>
+      )}
+    </h2>
+    <p class="py-1 text-base">{description}</p>
+    {tags.length > 0 && (
+      <div class="relative z-10 mt-2 flex flex-wrap justify-end gap-2">
+        {tags.map((tag) =>
+          tagHrefPrefix ? (
+            <a
+              href={`${tagHrefPrefix}/${encodeURIComponent(tag)}`}
+              class="badge badge-sm badge-outline rounded-full"
+            >
+              {tag}
+            </a>
+          ) : (
+            <span class="badge badge-sm badge-outline rounded-full">{tag}</span>
+          ),
+        )}
+      </div>
+    )}
+  </div>
+</article>

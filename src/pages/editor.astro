@@ -1,31 +1,33 @@
 ---
-import NoTransitionsLayout from "@layouts/NoTransitionsLayout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import LiveEditor from "../components/LiveEditor.astro";
-
 const title = "Live HTML/CSS/JS Code Editor similar to CodePen, built with Astro";
-const description = "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
+const description =
+  "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
 ---
 
-<NoTransitionsLayout
+<BaseLayout
   title={title}
   description={description}
   image="/experiments/live-editor.webp"
   sideBarActiveItemID="editor"
+  wide
+  transitions={false}
 >
-  <main class="p-6 pt-10 flex flex-col gap-6">
+  <div class="flex min-w-0 flex-col gap-6">
     <div>
-      <h1 class="text-3xl w-full font-bold mb-5">Live Code Editor</h1>
+      <h1 class="mb-5 text-3xl font-bold">Live Code Editor</h1>
       <div class="divider my-2"></div>
       <p>
-        {description} It uses CodeMirror under the hood. Edits are persisted to local storage. Optionally, you can easily
-        export your code to CodePen.
+        {description} It uses CodeMirror under the hood. Edits are persisted to local storage.
+        Optionally, you can easily export your code to CodePen.
       </p>
-      <div class="py-2 text-lg flex flex-wrap gap-2">
-        <span class="badge badge-outline">Astro</span>
-        <span class="badge badge-outline">TypeScript</span>
+      <div class="flex flex-wrap gap-2 py-2 text-lg">
+        <span class="badge badge-sm badge-outline rounded-full">Astro</span>
+        <span class="badge badge-sm badge-outline rounded-full">TypeScript</span>
       </div>
     </div>
-    <div class="flex flex-row gap-2">
+    <div>
       <a
         class="btn btn-neutral"
         href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
@@ -35,18 +37,11 @@ const description = "A client-side live code editor for HTML, CSS, and JavaScrip
         View component on GitHub
       </a>
     </div>
-    <LiveEditor
-      class="h-[500px]"
-      title="hello-world.html"
-      initialHtml="<h1>Hello, World!</h1>\n"
-      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }\n"
-      initialJs="console.log('Hello from the code editor!');\n"
-      localStorageKey="editor_code"
-      withCodepenButton
-      expandedEditors={true}
-    />
-    <div class="flex flex-row gap-2">
-      <a class="btn btn-neutral btn-outline" href="/editor/fullscreen">Go Fullscreen</a>
+    <LiveEditor />
+    <div>
+      <a class="btn btn-outline" href="/editor/fullscreen" data-astro-reload>
+        Go Fullscreen
+      </a>
     </div>
-  </main>
-</NoTransitionsLayout>
+  </div>
+</BaseLayout>

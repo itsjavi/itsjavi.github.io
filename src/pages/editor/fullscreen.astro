@@ -1,29 +1,22 @@
 ---
-import ThirdParties from "@components/ThirdParties.astro";
 import BaseHead from "../../components/BaseHead.astro";
+import ThirdParties from "../../components/ThirdParties.astro";
 import LiveEditor from "../../components/LiveEditor.astro";
-
-const title = "Live Code Editor for HTML/CSS/JS - Fullscreen";
-const description = "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
-const image = "/experiments/live-editor.webp";
 ---
 
 <!doctype html>
-<html lang="en" data-theme="lofi">
+<html lang="en" data-theme="site">
   <head>
-    <BaseHead title={title} description={description} image={image} />
+    <BaseHead
+      title="Live Code Editor for HTML/CSS/JS - Fullscreen"
+      description="A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen."
+      image="/experiments/live-editor.webp"
+    />
     <ThirdParties />
   </head>
-  <body class="w-screen h-screen bg-base-100">
-    <LiveEditor
-      class="w-full h-full"
-      title="hello-world.html"
-      initialHtml="<h1>Hello, World!</h1>\n"
-      initialCss="html { color-scheme: dark;}\nbody { font-family: Arial, sans-serif; }\n"
-      initialJs="console.log('Hello from the code editor!');\n"
-      localStorageKey="editor_code"
-      withCodepenButton
-      expandedEditors={true}
-    />
+  <body class="m-0 bg-base-100">
+    <main>
+      <LiveEditor fullscreen />
+    </main>
   </body>
 </html>

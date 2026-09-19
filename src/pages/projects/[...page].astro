@@ -1,49 +1,54 @@
 ---
-import { createSlugV2 } from "@lib/createSlug";
+import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import { Rocket } from "lucide-astro";
-import HorizontalCard from "../../components/HorizontalCard.astro";
+import { Rocket } from "@lucide/astro";
+import ContentCard from "../../components/ContentCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-export async function getStaticPaths({ paginate }: { paginate: any }) {
-  const posts = await getCollection("project");
-  posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-  return paginate(posts, { pageSize: 10 });
-}
+export const getStaticPaths = (async ({ paginate }) => {
+  const projects = (await getCollection("projects")).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  return paginate(projects, { pageSize: 10 });
+}) satisfies GetStaticPaths;
 
-type Props = {
-  page: {
-    data: CollectionEntry<"project">[];
-    url: {
-      prev?: string;
-      next?: string;
-    };
-  };
-};
+interface Props {
+  page: Page<CollectionEntry<"projects">>;
+}
 
 const { page } = Astro.props;
 ---
 
 <BaseLayout title="Projects | Javi Aguilar" sideBarActiveItemID="projects">
-  <div>
-    <h1 class="text-3xl w-full font-bold mb-5">
-      Projects <Rocket class="inline-block" />
-    </h1>
-  </div>
-
-  {
-    page.data.map((project, index) => (
-      <>
-        <HorizontalCard
+  <h1 class="mb-5 text-3xl font-bold">
+    Projects <Rocket class="inline-block" aria-hidden="true" />
+  </h1>
+  <div class="divide-y divide-base-content/10">
+    {page.data.map((project) => (
+      <div class="py-2">
+        <ContentCard
           title={project.data.title}
-          img={project.data.img}
-          desc={project.data.desc}
-          url={`/projects/${createSlugV2(project)}`}
+          image={project.data.img}
+          description={project.data.desc}
+          href={`/projects/${project.id}`}
           badge={project.data.badge}
         />
-        {index < page.data.length - 1 && <div class="divider my-0" />}
-      </>
-    ))
-  }
+      </div>
+    ))}
+  </div>
+  <nav class="mt-10 flex justify-between" aria-label="Project pages">
+    {page.url.prev ? (
+      <a class="btn btn-ghost" href={page.url.prev}>
+        ← Newer projects
+      </a>
+    ) : (
+      <span></span>
+    )}
+    {page.url.next && (
+      <a class="btn btn-ghost" href={page.url.next}>
+        Older projects →
+      </a>
+    )}
+  </nav>
 </BaseLayout>

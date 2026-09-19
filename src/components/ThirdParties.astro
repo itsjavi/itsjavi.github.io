@@ -1,1 +1,23 @@
-<script is:inline defer data-domain="itsjavi.com" src="https://ua.werkowl.com/js/script.js"></script>
+---
+const production = import.meta.env.PROD;
+---
+
+{production && <script is:inline data-astro-rerun>
+  if (location.hostname === "itsjavi.com" && !window.itsjaviAnalyticsLoaded) {
+    window.itsjaviAnalyticsLoaded = true;
+    const script = document.createElement("script");
+    script.defer = true;
+    script.src = "https://ua.werkowl.com/js/script.js";
+    script.dataset.domain = "itsjavi.com";
+    script.dataset.siteAnalytics = "true";
+    script.addEventListener(
+      "error",
+      () => {
+        window.itsjaviAnalyticsLoaded = false;
+        script.remove();
+      },
+      { once: true },
+    );
+    document.head.append(script);
+  }
+</script>}

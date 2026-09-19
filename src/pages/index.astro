@@ -1,143 +1,112 @@
 ---
+import { FlaskConical, Rocket } from "@lucide/astro";
 import { getCollection } from "astro:content";
-import { FlaskConical, Rocket } from "lucide-astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
+import ContentCard from "../components/ContentCard.astro";
 import { IS_BLOG_ENABLED } from "../config";
 import experiments from "../data/experiments.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import createSlug from "../lib/createSlug";
 
-const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const projects = (await getCollection("project")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const last_posts = posts.slice(0, 3);
-const last_projects = projects.slice(0, 3);
-const last_experiments = experiments.slice(0, 3);
-
-const hasBlogPosts = posts.length > 0 && IS_BLOG_ENABLED;
-const hasMoreBlogPosts = posts.length > last_posts.length && IS_BLOG_ENABLED;
-const hasMoreProjects = projects.length > last_projects.length;
-const hasMoreExperiments = experiments.length > last_experiments.length;
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const recentPosts = posts.slice(0, 3);
+const recentProjects = projects.slice(0, 3);
+const recentExperiments = experiments.slice(0, 3);
 ---
 
 <BaseLayout sideBarActiveItemID="home">
-  <div class="pb-12 mt-5">
-    <div class="text-xl py-1">Hi there! 👋</div>
-    <div class="text-5xl font-bold">I'm Javi Aguilar</div>
-    <div class="text-3xl py-3 font-bold">Full-Stack Software Engineer</div>
-    <div class="py-2 text-lg">
-      📍 Berlin. Passionate about web technologies and crafting good user experiences. I help teams launch successful
-      products while experimenting and exploring new technologies through many side projects.
+  <section class="mb-12 mt-5" aria-labelledby="intro-title">
+    <p class="py-1 text-xl">Hi there! 👋</p>
+    <h1 id="intro-title" class="text-5xl font-bold">
+      I'm Javi Aguilar
+    </h1>
+    <p class="py-3 text-3xl font-bold">Full-Stack Software Engineer</p>
+    <p class="py-2 text-lg">
+      📍 Berlin. Passionate about web technologies and crafting good user experiences. I help teams
+      launch successful products while experimenting and exploring new technologies through many
+      side projects.
+    </p>
+    <div class="flex flex-wrap gap-2 py-2 text-lg" aria-label="Technologies">
+      {["JavaScript", "TypeScript", "CSS", "HTML", "React", "Astro", "AWS", "Cloudflare"].map(
+        (item) => (
+          <span class="badge badge-sm badge-outline rounded-full">{item}</span>
+        ),
+      )}
     </div>
-    <div class="py-2 text-lg flex flex-wrap gap-2">
-      <span class="badge badge-outline">JavaScript</span>
-      <span class="badge badge-outline">TypeScript</span>
-      <span class="badge badge-outline">CSS</span>
-      <!-- <span class="badge badge-outline">TailwindCSS</span> -->
-      <span class="badge badge-outline">HTML</span>
-      <!-- <span class="badge badge-outline">Next.js</span>
-      <span class="badge badge-outline">Astro</span>
-      <span class="badge badge-outline">Remix</span> -->
-      <!-- <span class="badge badge-outline">PHP</span> -->
-      <!-- <span class="badge badge-outline">Symfony</span> -->
-      <span class="badge badge-outline">React</span>
-      <span class="badge badge-outline">Astro</span>
-      <span class="badge badge-outline">AWS</span>
-      <span class="badge badge-outline">Cloudflare</span>
-      <!-- <span class="badge badge-outline">DynamoDB</span>
-      <span class="badge badge-outline">PostgreSQL</span>
-      <span class="badge badge-outline">Redis</span>
-      <span class="badge badge-outline">Kafka</span>
-      <span class="badge badge-outline">OpenSearch</span> -->
-    </div>
-  </div>
+  </section>
 
-  {
-    hasBlogPosts && (
-      <>
-        <div>
-          <div class="text-3xl w-full font-bold mb-2">Recent posts</div>
-        </div>
-        {last_posts.map((post) => (
-          <>
-            <HorizontalCard
+  {IS_BLOG_ENABLED && recentPosts.length > 0 && (
+    <section class="mb-10" aria-labelledby="recent-posts-title">
+      <h2 id="recent-posts-title" class="mb-2 text-3xl font-bold">
+        Recent posts
+      </h2>
+      <div class="divide-y divide-base-content/10">
+        {recentPosts.map((post) => (
+          <div class="py-2">
+            <ContentCard
               title={post.data.title}
-              img={post.data.heroImage}
-              desc={post.data.description}
-              url={"/blog/" + createSlug(post.data.title, post.slug)}
-              target="_self"
+              image={post.data.heroImage}
+              description={post.data.description}
+              href={`/blog/${post.id}`}
               badge={post.data.badge}
             />
-            <div class="divider my-0" />
-          </>
-        ))}
-        {hasMoreBlogPosts && (
-          <div class="text-center mt-5">
-            <a href="/blog" class="btn btn-outline btn-gray">
-              View more posts
-            </a>
           </div>
-        )}
-      </>
-    )
-  }
+        ))}
+      </div>
+    </section>
+  )}
 
-  <div>
-    <div class={"text-3xl w-full font-bold mb-2" + (hasBlogPosts ? " mt-10" : "")}>
-      Latest projects <Rocket class="inline-block" />
+  <section aria-labelledby="latest-projects-title">
+    <h2 id="latest-projects-title" class="mb-2 text-3xl font-bold">
+      Latest projects <Rocket class="inline-block" aria-hidden="true" />
+    </h2>
+    <div class="divide-y divide-base-content/10">
+      {recentProjects.map((project) => (
+        <div class="py-2">
+          <ContentCard
+            title={project.data.title}
+            image={project.data.img}
+            description={project.data.desc}
+            href={`/projects/${project.id}`}
+            badge={project.data.badge}
+          />
+        </div>
+      ))}
     </div>
-  </div>
-
-  {
-    last_projects.map((project, index) => (
-      <>
-        <HorizontalCard
-          title={project.data.title}
-          img={project.data.img}
-          desc={project.data.desc}
-          url={`/projects/${project.slug}`}
-          badge={project.data.badge}
-        />
-        {index < last_projects.length - 1 && <div class="divider my-0" />}
-      </>
-    ))
-  }
-  {
-    hasMoreProjects && (
-      <div class="text-center mt-5">
-        <a href="/projects" class="btn btn-outline btn-gray">
+    {projects.length > recentProjects.length && (
+      <div class="mt-5 text-center">
+        <a href="/projects" class="btn btn-outline">
           View more projects
         </a>
       </div>
-    )
-  }
+    )}
+  </section>
 
-  <div>
-    <div class="text-3xl w-full font-bold mb-2 mt-10">
-      Latest experiments <FlaskConical class="inline-block" />
+  <section class="mt-10" aria-labelledby="latest-experiments-title">
+    <h2 id="latest-experiments-title" class="mb-2 text-3xl font-bold">
+      Latest experiments <FlaskConical class="inline-block" aria-hidden="true" />
+    </h2>
+    <div class="divide-y divide-base-content/10">
+      {recentExperiments.map((experiment) => (
+        <div class="py-2">
+          <ContentCard
+            title={experiment.title}
+            image={experiment.img}
+            description={experiment.desc}
+            href={`/experiments/${experiment.slug}`}
+          />
+        </div>
+      ))}
     </div>
-  </div>
-
-  {
-    last_experiments.map((experiment, index) => (
-      <>
-        <HorizontalCard
-          title={experiment.title}
-          img={experiment.img}
-          desc={experiment.desc}
-          url={"/experiments/" + experiment.slug}
-        />
-        {index < last_experiments.length - 1 && <div class="divider my-0" />}
-      </>
-    ))
-  }
-  {
-    hasMoreExperiments && (
-      <div class="text-center mt-5">
-        <a href="/experiments" class="btn btn-outline btn-gray">
+    {experiments.length > recentExperiments.length && (
+      <div class="mt-5 text-center">
+        <a href="/experiments" class="btn btn-outline">
           View more experiments
         </a>
       </div>
-    )
-  }
+    )}
+  </section>
 </BaseLayout>

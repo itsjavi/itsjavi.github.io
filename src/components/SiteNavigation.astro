@@ -1,0 +1,46 @@
+---
+import { SquareCode } from "@lucide/astro";
+
+export interface Props {
+  activeItem?: string;
+}
+
+const { activeItem } = Astro.props;
+const navItems = [
+  { id: "home", href: "/", label: "Home" },
+  { id: "projects", href: "/projects", label: "Projects" },
+  { id: "experiments", href: "/experiments", label: "Experiments" },
+] as const;
+---
+
+<nav aria-label="Primary" class="grow overflow-y-auto">
+  <ul class="grid w-full gap-1 px-2">
+    {navItems.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          aria-current={activeItem === item.id ? "page" : undefined}
+          class:list={[
+            "flex items-center rounded-field px-4 py-3 text-base",
+            { "bg-base-300": activeItem === item.id },
+          ]}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+    <li>
+      <a
+        href="/editor"
+        data-astro-reload
+        aria-current={activeItem === "editor" ? "page" : undefined}
+        class:list={[
+          "flex items-center gap-2 rounded-field px-4 py-3 text-base",
+          { "bg-base-300": activeItem === "editor" },
+        ]}
+      >
+        <SquareCode size={20} aria-hidden="true" /> Editor
+      </a>
+    </li>
+  </ul>
+</nav>

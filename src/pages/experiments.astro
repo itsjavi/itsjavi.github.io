@@ -1,29 +1,24 @@
 ---
-import HorizontalCard from "../components/HorizontalCard.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-
-import { FlaskConical } from "lucide-astro";
+import { FlaskConical } from "@lucide/astro";
+import ContentCard from "../components/ContentCard.astro";
 import experiments from "../data/experiments.json";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Experiments | Javi Aguilar" sideBarActiveItemID="experiments">
-  <div>
-    <h1 class="text-3xl w-full font-bold mb-5">
-      Experiments <FlaskConical class="inline-block" />
-    </h1>
-  </div>
-
-  {
-    experiments.map((experiment, index) => (
-      <>
-        <HorizontalCard
+  <h1 class="mb-5 text-3xl font-bold">
+    Experiments <FlaskConical class="inline-block" aria-hidden="true" />
+  </h1>
+  <div class="divide-y divide-base-content/10">
+    {experiments.map((experiment) => (
+      <div class="py-2">
+        <ContentCard
           title={experiment.title}
-          img={experiment.img}
-          desc={experiment.desc}
-          url={"/experiments/" + experiment.slug}
+          image={experiment.img}
+          description={experiment.desc}
+          href={`/experiments/${experiment.slug}`}
         />
-        {index < experiments.length - 1 && <div class="divider my-0" />}
-      </>
-    ))
-  }
+      </div>
+    ))}
+  </div>
 </BaseLayout>

@@ -1,0 +1,24 @@
+---
+import SiteNavigation from "./SiteNavigation.astro";
+import SocialLinks from "./SocialLinks.astro";
+
+export interface Props {
+  activeItem?: string;
+}
+
+const { activeItem } = Astro.props;
+---
+
+<div class="flex min-h-full flex-col bg-base-200 px-2 pt-2 text-base-content">
+  <a href="/" class="mx-auto mb-6 mt-5 block w-fit" aria-label="Javi Aguilar, home">
+    <img
+      src="/profile.jpg"
+      width="136"
+      height="136"
+      alt="Javi Aguilar"
+      class="mask mask-circle block size-[8.5rem] object-cover transition-transform hover:scale-[1.02]"
+    />
+  </a>
+  <SiteNavigation activeItem={activeItem} />
+  <SocialLinks />
+</div>

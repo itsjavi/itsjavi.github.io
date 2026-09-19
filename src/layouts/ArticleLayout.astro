@@ -1,0 +1,76 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  badge?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  section?: "blog" | "projects";
+}
+
+const {
+  title,
+  description,
+  image,
+  badge,
+  pubDate,
+  updatedDate,
+  tags = [],
+  section = "projects",
+} = Astro.props;
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(date);
+---
+
+<BaseLayout {title} {description} {image} ogType="article" sideBarActiveItemID={section}>
+  <article class="prose prose-lg mx-auto max-w-[750px] prose-img:mx-auto">
+    {image && (
+      <img
+        src={image}
+        width="750"
+        height="422"
+        alt={title}
+        class="mb-6 aspect-[750/422] w-full rounded-box border border-base-300 object-cover shadow-sm"
+      />
+    )}
+    <h1 class="my-2 text-4xl font-bold">{title}</h1>
+    {pubDate && (
+      <div>
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+      </div>
+    )}
+    {(badge || tags.length > 0) && (
+      <div class="mt-1 flex flex-wrap items-center gap-2">
+        {badge && (
+          <span
+            class:list={[
+              "badge badge-sm rounded-full",
+              section === "blog" ? "badge-secondary" : "badge-outline",
+            ]}
+          >
+            {badge}
+          </span>
+        )}
+        {tags.map((tag) => (
+          <a
+            href={`/blog/tag/${encodeURIComponent(tag)}`}
+            class="badge badge-sm badge-outline rounded-full no-underline"
+          >
+            {tag}
+          </a>
+        ))}
+      </div>
+    )}
+    {updatedDate && (
+      <p class="text-sm">
+        Last updated on <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+      </p>
+    )}
+    <div class="divider my-2"></div>
+    <slot />
+  </article>
+</BaseLayout>

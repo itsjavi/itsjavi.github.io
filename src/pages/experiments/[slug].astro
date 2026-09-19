@@ -1,29 +1,26 @@
 ---
-import { type ExperimentSchema } from "../../content/config";
 import experiments from "../../data/experiments.json";
 import ExperimentLayout from "../../layouts/ExperimentLayout.astro";
 
-export async function getStaticPaths() {
-  return experiments.map((entry: ExperimentSchema) => ({
-    params: { slug: entry.slug },
-    props: { entry },
+export function getStaticPaths() {
+  return experiments.map((experiment) => ({
+    params: { slug: experiment.slug },
+    props: { experiment },
   }));
 }
 
+type Experiment = (typeof experiments)[number];
 interface Props {
-  entry: ExperimentSchema;
+  experiment: Experiment;
 }
 
-const { entry } = Astro.props;
+const { experiment } = Astro.props;
 ---
 
 <ExperimentLayout
-  title={entry.title}
-  desc={entry.desc}
-  img={entry.img}
-  codepenUser={entry.codepenUser}
-  codepenId={entry.codepenId}
-  slug={entry.slug}
->
-  {entry.desc}
-</ExperimentLayout>
+  title={experiment.title}
+  description={experiment.desc}
+  image={experiment.img}
+  codepenUser={experiment.codepenUser}
+  codepenId={experiment.codepenId}
+/>
