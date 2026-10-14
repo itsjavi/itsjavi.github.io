@@ -1,100 +1,284 @@
-# itsjavi.com modern Astro site
+# itsjavi.com
 
-This repository is the fresh Astro implementation of `itsjavi.com`. It produces a static site for the
-existing GitHub Pages deployment. The migration deliberately uses current framework APIs rather than
-compatibility adapters from the legacy application.
+Source of [itsjavi.com](https://itsjavi.com): a store-style catalog of my apps and libraries, a blog, and a few CSS
+experiments. It is a static Astro site deployed to GitHub Pages, and it also feeds the project grid of my
+[GitHub profile README](https://github.com/itsjavi/itsjavi).
 
-## Requirements
+- [How it works](#how-it-works)
+- [Common tasks](#common-tasks): add, update, retire or remove a project; write a post; add an experiment
+- [Project file reference](#project-file-reference)
+- [Versions, release notes and the featured cards](#versions-release-notes-and-the-featured-cards)
+- [Code map](#code-map)
+- [Development](#development)
+- [Deployment and automation](#deployment-and-automation)
+- [Troubleshooting](#troubleshooting)
 
-- Node.js 24.16 or newer on the Node 24 line, or Node.js 26.3 or newer on the Node 26 line. Astro supports
-  even-numbered Node.js releases, and `eslint-plugin-astro` sets the higher patch-level requirement.
-- pnpm 12.4.2, pinned by the `packageManager` field.
+## How it works
 
-CI and the migration verification use Node.js 26.8.1 and pnpm 12.4.2.
+**There is no list of projects in the code.** Every `.md` file in `src/content/projects/` is a project: if the file
+exists and has `status: active` (the default), the project is on the site. Its `shelf` decides where it appears, and
+`order` decides its position. Everything else (the home page, the Apps and Libraries pages, search, the catalog and the
+README grid) is built from those files.
 
-Runtime and development dependencies use caret (`^`) ranges; the lockfile records the exact installed
-versions for reproducible builds. TypeScript uses `^6.0.3` because the current `@astrojs/check` peer range
-supports TypeScript 5 and 6. The previous TypeScript 7 declaration was not compatible with Astro's
-current check integration.
+```mermaid
+flowchart LR
+  P["src/content/projects/*.md<br>(you edit)"] --> B
+  R["GitHub Releases · npm · git tags · CHANGELOG.md"] --> B
+  B["astro build<br>src/lib/catalog.ts + releases.ts"] --> S["itsjavi.com<br>store, project pages, search"]
+  B --> J["/catalog.json + /icons/*.png"]
+  J --> W["itsjavi/itsjavi workflow<br>(daily)"] --> M["Profile README grid"]
+```
 
-## Commands
+1. **You describe each project once**, in one Markdown file under `src/content/projects/`: its name, tagline, shelf,
+   icon, screenshots and links.
+2. **The build adds everything that changes with releases**: the latest version and its date, the release notes, the
+   "Updated" badge and the featured cards. Nothing about versions is written by hand.
+3. **The site publishes a catalog** at `/catalog.json` with icons at `/icons/<id>.png`. The profile repository reads it
+   every day and regenerates its README grid.
+4. **The site rebuilds on every push and once a day**, so a new release shows up within a day without a commit here.
+
+Product websites such as `itsjavi.com/lamina/` or `itsjavi.com/notemd/` are **separate GitHub Pages repositories** served
+under the same domain. This site links to them and must never create pages at those paths. Store pages live under
+`/projects/<id>/`.
+
+## Common tasks
+
+### Add a project
+
+1. Create `src/content/projects/<id>.md`. The file name is the project's id and its URL: `/projects/<id>/`.
+2. Fill in the front matter (see the [reference](#project-file-reference)). The minimum for an active project:
+
+   ```yaml
+   ---
+   name: Lamina
+   tagline: Photo editing and compositing for the Mac
+   description: A simpler Photoshop and Affinity alternative, without the bloat, the subscription or the sign-up.
+   shelf: apps # apps | tools | libs
+   kind: Mac app
+   repo: itsjavi/lamina # versions and release notes come from here
+   ---
+   A few paragraphs or a short feature list. This is the "About" section of the project page.
+   ```
+
+3. Add an icon to `src/assets/icons/` and set `icon: <file>`. A full app icon (macOS squircle) needs nothing else; a
+   transparent glyph also needs `iconTile: "#hex"` for its background, and pixel art needs `iconPixelated: true`.
+   Libraries can skip the icon and use `monogram: abc` and `hue: 0-360` instead.
+4. Add screenshots to `src/assets/projects/<id>/` and list them under `screenshots:` (paths relative to
+   `src/assets/projects/`). The first one is used on cards and the featured card; all of them are in the project
+   page's full-screen viewer.
+5. Optional: `action` for the main button, `website`/`docs`/`npm`/`download` links, `requires`, `license`, `price`,
+   `size`, `category`, and `order` to place it within its shelf.
+6. Optional: `featured: true` to compete for the home page's featured cards, and `readme: true` (needs an `icon`) to put
+   it in the GitHub profile README grid.
+7. Run `pnpm dev` and check the home page, the shelf page and `/projects/<id>/`.
+
+The project then appears automatically in its shelf on the home page, on the Apps or Libraries page, in search, in
+`/catalog.json` and, with `readme: true`, in the profile README after the next daily run.
+
+### Update a project
+
+- **New version or release notes:** nothing to do here. Publish the release in the project's own repository (a GitHub
+  release, an npm version or a git tag). It appears after the next daily build, or right away if you run the deploy
+  workflow by hand.
+- **Text, links, icon or screenshots:** edit the project file or replace the files in `src/assets/`.
+
+### Retire a project
+
+Retired projects disappear from every listing, search, the sitemap, `/catalog.json` and the README, but their page stays
+online at the same URL with a "Retired" note, so old links keep working.
+
+1. Set `status: retired` and remove `shelf`, `featured` and `readme`.
+2. Remove links to the project's website and repository from the front matter **and** the body. Those sites may be
+   gone; retired pages must not link to them.
+3. Keep `name`, `tagline`, `description` and the body. `img` (a path in `public/`) is shown as the page's cover.
+
+### Remove a project completely
+
+Prefer retiring. If a project must go, delete its file and its assets in `src/assets/icons/` and
+`src/assets/projects/<id>/`, then add a redirect for the old URL in `astro.config.mjs`:
+
+```js
+redirects: {
+  "/projects/<id>": "/projects/",
+},
+```
+
+Also delete `assets/icons/<id>.png` from the profile repository if it was in the README grid. The next README run stops
+listing it but doesn't delete old icon files.
+
+### Write a post
+
+```sh
+pnpm new:post "Post title"
+```
+
+This creates `src/content/blog/<slug>.md` as a draft. Drafts show in `pnpm dev` only. Remove `draft: true` to publish.
+
+| Field         | Required | Notes                                                                                   |
+| ------------- | -------- | --------------------------------------------------------------------------------------- |
+| `title`       | yes      |                                                                                         |
+| `pubDate`     | yes      | `YYYY-MM-DD`                                                                            |
+| `description` | no       | Defaults to the first paragraph. Used in listings, RSS and social previews.             |
+| `tags`        | no       | Each tag gets a page at `/blog/tag/<tag>/`.                                             |
+| `projects`    | no       | Project ids, e.g. `[notemd]`. The post is listed on those project pages and vice versa. |
+| `heroImage`   | no       | A path in `public/`, shown above the post and in social previews.                       |
+| `updatedDate` | no       |                                                                                         |
+| `draft`       | no       |                                                                                         |
+| `discussion`  | no       | Giscus thread title to reuse, for a post that moved from another URL.                   |
+
+Use `.mdx` when a post needs components.
+
+### Add a CSS experiment
+
+Add an entry to `src/data/experiments.json` (slug, title, description, image and CodePen id), put the thumbnail in both
+`src/assets/experiments/` (optimized for listings) and `public/experiments/` (social previews), and it gets a page at
+`/experiments/<slug>/`.
+
+## Project file reference
+
+All fields are validated by the schema in `src/content.config.ts`; a typo fails the build with the field name.
+
+| Field                                               | Notes                                                                                                                                                                  |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                              | Display name.                                                                                                                                                          |
+| `tagline`                                           | One line, shown under the name everywhere.                                                                                                                             |
+| `description`                                       | One or two sentences for cards, meta tags and empty "About" sections.                                                                                                  |
+| `status`                                            | `active` (default) or `retired`.                                                                                                                                       |
+| `shelf`                                             | Required when active. `apps`: Mac apps. `tools`: Tools and websites. `libs`: Frameworks and libraries (with an `icon` they get a card; the rest are listed compactly). |
+| `kind`                                              | Short type, e.g. `Mac app`, `Website`, `Library`.                                                                                                                      |
+| `category`                                          | Shown on rows and in the info strip.                                                                                                                                   |
+| `order`                                             | Position within the shelf, lower first (default 100). The README grid uses the same order.                                                                             |
+| `icon`                                              | File name in `src/assets/icons/` (PNG or SVG).                                                                                                                         |
+| `iconTile`                                          | Background color for glyph icons that aren't a full app icon.                                                                                                          |
+| `iconPixelated`                                     | Keeps pixel art sharp.                                                                                                                                                 |
+| `monogram`, `hue`                                   | Letters and hue for the tile of a project without an icon.                                                                                                             |
+| `screenshots`                                       | Paths relative to `src/assets/projects/`. A missing file fails the build.                                                                                              |
+| `repo`                                              | `owner/name` on GitHub. Source of versions, release notes and the "Source on GitHub" button.                                                                           |
+| `npm`                                               | Package name. Fallback source of versions, an install box and an npm button.                                                                                           |
+| `website`, `docs`, `download`                       | Links. `download` overrides the default `https://github.com/<repo>/releases/latest`.                                                                                   |
+| `action`                                            | Main button and pill: `download` (Get), `build` (Build from source), `open`, `visit`, `docs`, `install` (npm).                                                         |
+| `requires`, `platforms`, `license`, `price`, `size` | Info strip on the project page. `requires: "macOS 26, Apple silicon"` shows "macOS 26" over "Apple silicon".                                                           |
+| `badge`                                             | Manual badge such as `New`. Without it, a release from the last 21 days shows "Updated".                                                                               |
+| `featured`                                          | Candidate for the home page's featured cards.                                                                                                                          |
+| `color`                                             | CSS background of the featured card, usually a gradient.                                                                                                               |
+| `featureText`                                       | Featured card text when there's no recent release summary.                                                                                                             |
+| `readme`                                            | Include in the GitHub profile README grid. Needs `icon`.                                                                                                               |
+| `readmeTagline`                                     | Shorter tagline for the README grid.                                                                                                                                   |
+| `img`, `pubDate`                                    | Cover image and date, used by retired pages.                                                                                                                           |
+
+Values that contain `: ` must be quoted in YAML (`description: "Parse headers: IP, OS…"`).
+
+## Versions, release notes and the featured cards
+
+`src/lib/releases.ts` finds each project's latest version at build time, in this order:
+
+1. The latest **GitHub release** of `repo`: version, date and notes.
+2. The latest **npm** version of `npm`: version and date.
+3. The latest **git tag** of `repo`: version and the tagged commit's date.
+
+When the release has no notes, the matching `## <version>` section of the repository's **`CHANGELOG.md`** is used.
+GitHub renders and sanitizes the notes. Signing and checksum boilerplate ("Signed with Developer ID…", "Check a
+download…", "Full Changelog") is dropped, and long notes are collapsed on the project page.
+
+**Featured cards.** The home page shows the two `featured: true` projects with the most recent releases. A project
+without any release sorts last. Each card shows:
+
+- "New release · date" when the release is under 30 days old, otherwise "Open source";
+- the name and short version (`Lamina 2`, `QuickEdit 0.3`);
+- the first line of the release notes while the release is recent, otherwise `featureText`, otherwise `description`.
+  To control that line, start each release's notes with a one-sentence summary. A leading `QuickEdit 0.3.0:` prefix is
+  removed;
+- the first screenshot on the `color` background.
+
+Lookups are cached in `node_modules/.cache/itsjavi/releases.json` for an hour. Without network the build still
+succeeds, using cached data or no version.
+
+## Code map
+
+```text
+src/
+  content.config.ts        schemas for projects and blog posts
+  config.ts                site title, profile copy, navigation, social links
+  content/projects/        one file per project: this folder is the catalog
+  content/blog/            posts
+  data/experiments.json    CSS experiments
+  assets/                  icons, screenshots, experiment thumbnails, profile photo (optimized at build)
+  lib/catalog.ts           loads active projects + releases; shelves, featured cards, badges, buttons
+  lib/releases.ts          GitHub Releases / npm / tags / CHANGELOG.md lookups and cache
+  lib/posts.ts             published posts, reading time, descriptions
+  pages/index.astro        home (Discover)
+  pages/projects/          Apps (index), Libraries, project pages ([id]: store page or retired page)
+  pages/blog/              Writing, posts, tag pages
+  pages/catalog.json.ts    public catalog for the profile README
+  pages/icons/[id].png.ts  256 px icons with tiles baked in (sharp)
+  pages/rss.xml.ts         RSS for posts
+  components/              header, tab bar, search, theme switch, cards, rows, gallery and viewer
+  layouts/                 BaseLayout (shell), ArticleLayout (posts, retired pages, experiments)
+  styles/global.css        Tailwind, color tokens, buttons, pills, prose
+scripts/new-post.mjs       pnpm new:post
+```
+
+`getCatalog()` in `src/lib/catalog.ts` is the single entry point for projects: it reads the collection, keeps
+`status: active`, attaches each project's latest release and sorts by `order`. Every page that lists projects calls it
+(or `getShelf()`, `getFeatured()`), so there is nothing else to register.
+
+**Styling.** Tailwind 4 with the typography plugin, plus scoped `<style>` blocks in components. Colors are tokens in
+`src/styles/global.css`, each a `light-dark()` pair, so the theme switch only changes `color-scheme`. The accent is
+sky blue: `--accent` for text and links, `--accent-soft` for pill and badge tints, and `--accent-fill` with
+`--on-accent` for filled buttons.
+
+**Theme switch.** Light or dark; until a visitor picks one, the OS preference applies. The choice is saved in
+`localStorage` and applied by an inline script in `BaseHead.astro` before first paint. Giscus comments follow it.
+
+**Search.** ⌘K, `/` or the search button opens a dialog. Its index (projects, posts and experiments) is built into
+every page by `SearchDialog.astro`; there is no search service.
+
+**Images.** Icons, screenshots and thumbnails go through `astro:assets`, which creates resized WebP files. The project
+page's gallery opens a full-screen viewer with arrows, keyboard and swipe navigation.
+
+## Development
+
+Requirements: Node.js 24.16+ or 26.3+ (CI uses 26.8.1) and pnpm 12.4.2 (pinned in `packageManager`). TypeScript stays
+on `^6` because `astro check` doesn't support TypeScript 7.0 yet.
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm dev
-pnpm build
-pnpm preview
-pnpm format
-pnpm format:check
-pnpm lint
+pnpm dev                     # dev server, drafts visible
+pnpm build                   # static site in dist/
+pnpm preview                 # serve dist/
+pnpm new:post "Post title"
+pnpm format                  # oxfmt, and prettier for .astro files
+pnpm lint                    # oxlint, eslint for .astro files, astro check
 ```
 
-`pnpm lint` runs three checks in sequence and propagates failures: Oxlint over supported JavaScript and
-TypeScript-family source, the community-maintained `eslint-plugin-astro` over `.astro` templates only, and
-`astro check` for Astro diagnostics and TypeScript checking. Oxlint does not inspect Astro template markup.
+Set `GITHUB_TOKEN` when building locally a lot; unauthenticated GitHub API calls are limited to 60 an hour.
 
-`pnpm format` uses Oxfmt for its supported files, including JavaScript, TypeScript, JSON, CSS, Markdown and
-MDX. `.astro` files are excluded from Oxfmt and formatted only by Prettier with Astro's official
-`prettier-plugin-astro`. `pnpm format:check` checks the same ownership without changing files. Generated
-`.astro/` and `dist/` output and installed dependencies are ignored.
+## Deployment and automation
 
-VS Code uses the Oxc extension as the default formatter and Prettier only for Astro files. The Astro,
-ESLint, Prettier, Oxc and MDX extensions are recommended in the workspace settings.
+| Workflow                                | When                                    | What                                                                                                         |
+| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `.github/workflows/gh-pages.yml` (here) | Push to `main`, manual, daily 05:17 UTC | Builds with a fresh release lookup and deploys `dist/` to GitHub Pages. `public/CNAME` serves `itsjavi.com`. |
+| `readme.yml` in `itsjavi/itsjavi`       | Daily 05:47 UTC, manual                 | Reads `itsjavi.com/catalog.json`, redraws the README grid and icons, commits only when something changed.    |
 
-## Stack
+To publish a release on the site right away:
 
-- Astro 7.3.3 with the official MDX 8.0.1, sitemap 3.7.4 and RSS 4.0.19 packages
-- Tailwind CSS and `@tailwindcss/vite` 4.3.3
-- daisyUI 5.7.42 and Tailwind Typography 0.5.20, configured as CSS plugins
-- Oxfmt 0.68.0 and Oxlint 1.83.0
+```sh
+gh workflow run gh-pages.yml -R itsjavi/itsjavi.github.io
+gh workflow run readme.yml -R itsjavi/itsjavi
+```
 
-The site remains statically rendered. `astro.config.mjs` uses Tailwind's Vite plugin directly; it does not use
-the deprecated Astro Tailwind integration or a server adapter.
+GitHub disables scheduled workflows in public repositories after 60 days without commits and emails a warning; re-enable
+them from the Actions tab.
 
-## Content and browser behavior
+## Troubleshooting
 
-`src/content.config.ts` defines build-time `glob()` collections. Blog entry filenames are the canonical
-public IDs; project filenames also match their existing public IDs, including `new-css-logo`. Pages,
-cards and RSS all use those IDs. Render content with Astro's `render()` function. `src/data/experiments.json`
-holds experiment data, and `src/config.ts` controls site metadata and the intentionally hidden blog UI.
-
-The shared layout uses Astro's `ClientRouter`. The mobile navigation uses a native modal dialog.
-Editor links use document navigation. CodeMirror and CodePen initialize through custom elements;
-Giscus initializes after `astro:page-load`, when Astro has finished replaying scripts. Saved editor documents retain the `editor_code` localStorage
-schema (`title`, `html`, `css`, `js`); the preview runs in an opaque sandbox iframe.
-
-The `site` daisyUI theme is authored in `src/styles/global.css` using current CSS theme tokens. Content,
-media, public URLs and the original attribution are preserved. Small differences in current daisyUI
-control dimensions, syntax highlighting and focus styling are expected.
-
-## Release and rollback
-
-Run the install, format check, lint and build commands above from this repository. `pnpm preview --host
-127.0.0.1 --port 4323` serves the production `dist/` artifact locally. Check the home, project/blog
-listings and details, tag pages, experiments, CV, 404, editor and fullscreen editor at desktop and mobile
-widths. Verify `rss.xml`, `sitemap-index.xml`, `sitemap-0.xml`, `robots.txt` and `CNAME` in `dist/`.
-
-The workflow preserves the original single-job GitHub Pages deployment: pushes to `main` and manual
-runs install with `--frozen-lockfile`, build, upload `dist/` and deploy directly. No pull request is
-required. The only workflow change from the original is Node.js 26.8.1 for compatibility with the new
-stack. Run `pnpm format:check` and `pnpm lint` locally before publishing.
-
-`public/CNAME` is copied into the artifact for `itsjavi.com`; no base path or server adapter is needed.
-The site builds independently of the sibling legacy checkout. Publishing requires pushing this
-repository to `main` or running the workflow; the migration did not publish a release or change the
-Pages/domain settings.
-
-Migration evidence and acceptance records live in the parent workspace's Backlog milestone `m-0`,
-tasks `TASK-1` through `TASK-5`, and `backlog/assets/`. The rollback reference is the unchanged
-`astro4-legacy` repository at `965ea7ffe8b1ebfbc70c81ce598629e502d7280d`; retain its known-good deployment
-artifact until the modern release has been checked in production. Roll back by redeploying that
-known-good artifact through the existing Pages process.
-
-Browser verification intercepts CodePen exports, stubs embed services when checking lifecycle behavior,
-and blocks analytics. Live service availability, authenticated Giscus posting, published pens, real
-analytics ingestion and GitHub-hosted CI/deployment require a separate live check. Local and preview
-hosts never load analytics; the production hostname initializes the existing tracker once per document.
-
-The current Astro/MDX build emits a Rolldown warning about its generated `use astro:head-inject`
-directive, plus a size warning for the CodeMirror editor bundle. Both remain visible; the build succeeds
-and the production content/editor checks pass. CodeMirror is loaded on editor pages only.
+- **A project shows no version.** It has no GitHub release, npm package or git tag yet, or the lookup failed. Check the
+  build log for `[releases]` warnings.
+- **Release notes are missing.** The release has an empty body and the repository has no `CHANGELOG.md` section with
+  that exact version.
+- **"Rate limit exceeded" warnings locally.** Set `GITHUB_TOKEN`, or wait: the cache serves the last known data.
+- **Stale data while developing.** Delete `node_modules/.cache/itsjavi/`.
+- **"Nested mappings are not allowed".** A front matter value contains `: ` and needs quotes.
+- **"Missing screenshot …".** A path under `screenshots` doesn't match a file in `src/assets/projects/`.
+- **A project is missing from the README grid.** It needs both `readme: true` and an `icon`, and the site must be
+  deployed before the README workflow runs.
