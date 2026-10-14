@@ -1,24 +1,91 @@
 ---
-import { FlaskConical } from "@lucide/astro";
-import ContentCard from "../components/ContentCard.astro";
+import { Image } from "astro:assets";
 import experiments from "../data/experiments.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const images = import.meta.glob<{ default: ImageMetadata }>("../assets/experiments/*.webp", {
+  eager: true,
+});
 ---
 
-<BaseLayout title="Experiments | Javi Aguilar" sideBarActiveItemID="experiments">
-  <h1 class="mb-5 text-3xl font-bold">
-    Experiments <FlaskConical class="inline-block" aria-hidden="true" />
-  </h1>
-  <div class="divide-y divide-base-content/10">
-    {experiments.map((experiment) => (
-      <div class="py-2">
-        <ContentCard
-          title={experiment.title}
-          image={experiment.img}
-          description={experiment.desc}
-          href={`/experiments/${experiment.slug}`}
-        />
-      </div>
-    ))}
+<BaseLayout
+  title="CSS experiments · Javi Aguilar"
+  description="Small CSS experiments: gradients, animations, masks and math functions."
+  nav="experiments"
+>
+  <header class="head">
+    <h1 class="page-title">CSS experiments</h1>
+    <p>
+      Small pens about what CSS can do on its own. There's also a{" "}
+      <a href="/editor/">live code editor</a>.
+    </p>
+  </header>
+  <div class="grid">
+    {experiments.map((e) => {
+      const image = images[`../assets/experiments/${e.img.split("/").pop()}`]?.default;
+      return (
+        <a class="card exp" href={`/experiments/${e.slug}/`}>
+          {image && (
+            <Image src={image} alt="" widths={[400, 720]} sizes="(max-width: 860px) 92vw, 380px" />
+          )}
+          <div>
+            <h2>{e.title}</h2>
+            <p>{e.desc}</p>
+          </div>
+        </a>
+      );
+    })}
   </div>
 </BaseLayout>
+
+<style>
+  .head {
+    padding: 44px 0 24px;
+  }
+  .head p {
+    color: var(--muted);
+    margin: 8px 0 0;
+    font-size: 16px;
+  }
+  .head a {
+    color: var(--accent);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .exp {
+    overflow: hidden;
+  }
+  .exp:hover {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  }
+  .exp img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+  }
+  .exp div {
+    padding: 14px 16px 18px;
+  }
+  h2 {
+    font: 650 17px/1.25 var(--display);
+    margin: 0 0 6px;
+  }
+  .exp p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  @media (max-width: 860px) {
+    .head {
+      padding-top: 24px;
+    }
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

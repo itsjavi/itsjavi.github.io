@@ -3,18 +3,47 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="404 - Not Found"
+  title="Page not found · Javi Aguilar"
   description="The requested page could not be found."
-  includeSidebar={false}
+  noindex
 >
-  <div class="text-center">
-    <div class="mb-4 text-9xl font-bold" aria-hidden="true">
-      🏝
+  <section class="nf">
+    <p class="eyebrow">404</p>
+    <h1 class="page-title">This page isn't here</h1>
+    <p>It may have moved, or the project it belonged to was retired.</p>
+    <div class="btns">
+      <a class="btn btn-primary" href="/">
+        Go to the home page
+      </a>
+      <button class="btn" type="button" data-search-open>
+        Search
+      </button>
     </div>
-    <h1 class="mb-2 text-9xl font-bold">404</h1>
-    <p class="text-2xl">The page you're looking for couldn't be found.</p>
-    <a class="btn btn-accent mt-9" href="/">
-      Home
-    </a>
-  </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .nf {
+    padding: 96px 0 48px;
+    text-align: center;
+  }
+  .eyebrow {
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .nf > p:not(.eyebrow) {
+    color: var(--muted);
+    margin: 12px 0 24px;
+  }
+  .btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  button {
+    border: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    cursor: pointer;
+  }
+</style>

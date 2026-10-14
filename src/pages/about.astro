@@ -1,0 +1,102 @@
+---
+import { Image } from "astro:assets";
+import profile from "../assets/profile.jpg";
+import { PROFILE, SOCIAL_LINKS } from "../config";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About · Javi Aguilar" description={PROFILE.headline} nav="about">
+  <section class="about">
+    <Image
+      src={profile}
+      alt="Javi Aguilar"
+      width={168}
+      height={168}
+      densities={[1, 2]}
+      class="photo"
+    />
+    <div>
+      <h1 class="page-title">Hi, I'm Javi</h1>
+      <p class="lede">{PROFILE.headline}</p>
+      <p>{PROFILE.intro}</p>
+      <p>
+        I also maintain production libraries at <a href="https://github.com/dendrell">@dendrell</a>,
+        and I designed the
+        <a href="/blog/new-css-logo/">official CSS logo</a>.
+      </p>
+      <ul class="links">
+        {SOCIAL_LINKS.map((link) => (
+          <li>
+            <a href={link.href} rel="me">
+              {link.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/rss.xml">RSS</a>
+        </li>
+        <li>
+          <a href="https://github.com/sponsors/itsjavi">Sponsor my work</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    padding: 56px 0 24px;
+    max-width: 860px;
+  }
+  .about :global(.photo) {
+    width: 168px;
+    height: 168px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+  }
+  .lede {
+    font-size: 19px;
+    margin: 12px 0 16px;
+  }
+  p {
+    margin: 0 0 14px;
+    max-width: 62ch;
+  }
+  p a {
+    color: var(--accent);
+  }
+  .links {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .links a {
+    display: inline-block;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--pill);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .links a:hover {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .about {
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 28px;
+    }
+    .about :global(.photo) {
+      width: 112px;
+      height: 112px;
+    }
+  }
+</style>

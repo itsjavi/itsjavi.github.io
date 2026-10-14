@@ -1,7 +1,7 @@
 ---
 import CodePen from "../components/CodePen.astro";
 import GiscusComments from "../components/GiscusComments.astro";
-import BaseLayout from "./BaseLayout.astro";
+import ArticleLayout from "./ArticleLayout.astro";
 
 export interface Props {
   title: string;
@@ -14,13 +14,15 @@ export interface Props {
 const { title, description, image, codepenUser, codepenId } = Astro.props;
 ---
 
-<BaseLayout {title} {description} {image} ogType="article" sideBarActiveItemID="experiments">
-  <article class="prose prose-lg mx-auto max-w-[750px] prose-img:mx-auto">
-    <h1 class="my-2 text-4xl font-bold">{title}</h1>
-    <div class="divider my-2"></div>
-    <p>{description}</p>
-    <CodePen user={codepenUser} penId={codepenId} {title} height="480" />
-    <hr />
-    <GiscusComments />
-  </article>
-</BaseLayout>
+<ArticleLayout
+  {title}
+  {description}
+  {image}
+  cover={false}
+  nav="experiments"
+  crumb={{ label: "CSS experiments", href: "/experiments/" }}
+>
+  <p>{description}</p>
+  <CodePen user={codepenUser} penId={codepenId} {title} height="480" />
+  <GiscusComments slot="after" />
+</ArticleLayout>

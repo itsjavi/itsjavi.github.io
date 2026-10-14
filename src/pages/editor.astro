@@ -1,47 +1,61 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
 import LiveEditor from "../components/LiveEditor.astro";
-const title = "Live HTML/CSS/JS Code Editor similar to CodePen, built with Astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const title = "Live code editor";
 const description =
   "A client-side live code editor for HTML, CSS, and JavaScript, inspired by CodePen.";
 ---
 
 <BaseLayout
-  title={title}
-  description={description}
+  title={`${title} · Javi Aguilar`}
+  {description}
   image="/experiments/live-editor.webp"
-  sideBarActiveItemID="editor"
-  wide
-  transitions={false}
+  nav="editor"
 >
-  <div class="flex min-w-0 flex-col gap-6">
-    <div>
-      <h1 class="mb-5 text-3xl font-bold">Live Code Editor</h1>
-      <div class="divider my-2"></div>
-      <p>
-        {description} It uses CodeMirror under the hood. Edits are persisted to local storage.
-        Optionally, you can easily export your code to CodePen.
-      </p>
-      <div class="flex flex-wrap gap-2 py-2 text-lg">
-        <span class="badge badge-sm badge-outline rounded-full">Astro</span>
-        <span class="badge badge-sm badge-outline rounded-full">TypeScript</span>
-      </div>
-    </div>
-    <div>
+  <header class="head">
+    <p class="crumbs">
+      <a href="/experiments/">CSS experiments</a>
+    </p>
+    <h1 class="page-title">{title}</h1>
+    <p>
+      {description} It uses CodeMirror, keeps your edits in local storage, and exports to CodePen.
+    </p>
+    <div class="btns">
+      <a class="btn" href="/editor/fullscreen/">
+        Open fullscreen
+      </a>
       <a
-        class="btn btn-neutral"
+        class="btn"
         href="https://github.com/itsjavi/itsjavi.github.io/blob/main/src/components/LiveEditor.astro"
-        target="_blank"
-        rel="noopener noreferrer"
       >
-        View component on GitHub
+        View the component on GitHub
       </a>
     </div>
-    <LiveEditor />
-    <div>
-      <a class="btn btn-outline" href="/editor/fullscreen" data-astro-reload>
-        Go Fullscreen
-      </a>
-    </div>
-  </div>
+  </header>
+  <LiveEditor />
 </BaseLayout>
+
+<style>
+  .head {
+    padding: 28px 0 24px;
+  }
+  .crumbs {
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  .crumbs a {
+    color: var(--accent);
+  }
+  .head > p:not(.crumbs) {
+    color: var(--muted);
+    margin: 8px 0 16px;
+    font-size: 16px;
+    max-width: 62ch;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>
