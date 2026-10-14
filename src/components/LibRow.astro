@@ -1,0 +1,50 @@
+---
+import type { CatalogItem } from "../lib/catalog";
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  item: CatalogItem;
+}
+
+const { item } = Astro.props;
+---
+
+<a class="lib" href={`/projects/${item.id}/`}>
+  <AppIcon project={item} size={40} />
+  <div>
+    <b>{item.data.name}</b>
+    <span>{item.data.tagline}</span>
+  </div>
+  {item.release && <small>{item.release.version}</small>}
+</a>
+
+<style>
+  .lib {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  div {
+    min-width: 0;
+  }
+  b {
+    font: 600 14px/1.2 var(--mono);
+    letter-spacing: -0.01em;
+  }
+  span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  small {
+    margin-left: auto;
+    color: var(--muted);
+    font: 12px var(--mono);
+  }
+  .lib:hover b {
+    color: var(--accent);
+  }
+</style>

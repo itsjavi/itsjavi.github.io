@@ -1,0 +1,406 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  type CatalogItem,
+  formatDate,
+  getShelf,
+  primaryAction,
+  screenshotImages,
+  SHELVES,
+} from "../lib/catalog";
+import { getPosts } from "../lib/posts";
+import AppIcon from "./AppIcon.astro";
+import ScreenshotGallery from "./ScreenshotGallery.astro";
+
+interface Props {
+  item: CatalogItem;
+}
+
+const { item } = Astro.props;
+const d = item.data;
+const { release } = item;
+const shelf = d.shelf ?? "apps";
+const isLib = shelf === "libs";
+const section = isLib
+  ? { label: "Libraries", href: "/projects/libraries/" }
+  : { label: "Apps", href: "/projects/" };
+
+const primary = primaryAction(item);
+const repoUrl = d.repo && `https://github.com/${d.repo}`;
+const secondary = [
+  d.website && {
+    label: d.action === "visit" ? d.website.replace(/^https?:\/\//, "") : "Website",
+    href: d.website,
+  },
+  d.docs && { label: "Docs", href: d.docs },
+  d.npm && { label: "npm", href: `https://www.npmjs.com/package/${d.npm}` },
+  repoUrl && { label: "Source on GitHub", href: repoUrl },
+].filter((link): link is { label: string; href: string } => !!link && link.href !== primary?.href);
+
+const facts = [
+  release && { label: "Version", value: release.version, note: formatDate(release.date, "long") },
+  d.price && {
+    label: "Price",
+    value: d.price,
+    note: d.license === "MIT" ? "No sign-up" : undefined,
+  },
+  d.license && {
+    label: "License",
+    value: d.license,
+    note: d.license === "MIT" ? "Open source" : undefined,
+  },
+  d.size && { label: "Size", value: d.size.replace(/^Under /, "< "), note: "Download" },
+  d.requires && {
+    label: "Requires",
+    value: d.requires.split(",")[0],
+    note: d.requires.split(",")[1]?.trim(),
+  },
+  d.platforms && platformsFact(d.platforms),
+  d.category && { label: "Category", value: d.category },
+].filter((f): f is { label: string; value: string; note?: string } => !!f);
+
+function platformsFact(platforms: string) {
+  const count = platforms.split(/,\s*|\s+and\s+/).length;
+  return count > 1
+    ? { label: "Runs on", value: `${count} platforms`, note: platforms }
+    : { label: "Runs on", value: platforms };
+}
+
+const shots = screenshotImages(item);
+const posts = (await getPosts()).filter((p) => p.data.projects.includes(item.id));
+const more = (await getShelf(shelf)).filter((p) => p.id !== item.id).slice(0, 4);
+const title = `${d.name}: ${d.tagline}`;
+---
+
+<BaseLayout {title} description={d.description} nav={isLib ? "libraries" : "apps"}>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href={section.href}>{section.label}</a> › {d.name}
+  </nav>
+
+  <section class="hero">
+    <AppIcon project={item} size={148} class="hero-icon" />
+    <div>
+      <h1>{d.name}</h1>
+      <p class="sub">{d.tagline}</p>
+      <div class="btns">
+        {primary && (
+          <a class="btn btn-primary" href={primary.href}>
+            {primary.label === "Download"
+              ? `Download${shelf === "apps" ? " for Mac" : ""}`
+              : primary.label}
+          </a>
+        )}
+        {secondary.map((link) => (
+          <a class="btn" href={link.href}>
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {facts.length > 0 && (
+    <section class="info" style={`--cols:${facts.length}`} aria-label="Details">
+      {facts.map((f) => (
+        <div>
+          <small>{f.label}</small>
+          <b>{f.value}</b>
+          {f.note && <span>{f.note}</span>}
+        </div>
+      ))}
+    </section>
+  )}
+
+  {d.npm && (
+    <section class="install" aria-label="Install">
+      <code>pnpm add {d.npm}</code>
+      <button type="button" class="pill" data-copy={`pnpm add ${d.npm}`}>
+        Copy
+      </button>
+    </section>
+  )}
+
+  {shots.length > 0 && <ScreenshotGallery images={shots} name={d.name} />}
+
+  <section class="cols">
+    <div>
+      <h2>About {d.name}</h2>
+      <div class="prose prose-site max-w-none">
+        {item.body?.trim() ? <slot /> : <p>{d.description}</p>}
+      </div>
+      {release?.notesHtml && (
+        <details class="notes" open={release.notesHtml.length < 2400}>
+          <summary>
+            <h2>What's new in {release.version}</h2>
+          </summary>
+          <div class="prose prose-site max-w-none" set:html={release.notesHtml} />
+        </details>
+      )}
+    </div>
+    <aside class="side">
+      {release && (
+        <div class="box">
+          <h3>Latest release</h3>
+          <div class="ver">
+            <b>{release.version}</b>
+            <span>{formatDate(release.date, "long")}</span>
+          </div>
+          <ul>
+            <li>
+              <a
+                href={release.source === "github" && repoUrl ? `${repoUrl}/releases` : release.url}
+              >
+                {
+                  {
+                    github: "All releases on GitHub →",
+                    npm: "Version history on npm →",
+                    tag: "All tags on GitHub →",
+                  }[release.source]
+                }
+              </a>
+            </li>
+          </ul>
+        </div>
+      )}
+      {posts.length > 0 && (
+        <div class="box">
+          <h3>Written about it</h3>
+          <ul>
+            {posts.map((p) => (
+              <li>
+                <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {more.length > 0 && (
+        <div class="box">
+          <h3>More {SHELVES[shelf].title.toLowerCase()}</h3>
+          <ul>
+            {more.map((m) => (
+              <li>
+                <a class="more" href={`/projects/${m.id}/`}>
+                  <AppIcon project={m} size={32} />
+                  <span>
+                    {m.data.name}
+                    <small>{m.data.tagline}</small>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </aside>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(button.dataset.copy!);
+      button.textContent = "Copied";
+      setTimeout(() => (button.textContent = "Copy"), 1600);
+    });
+  });
+</script>
+
+<style>
+  .crumbs {
+    padding: 28px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .crumbs a {
+    color: var(--accent);
+  }
+  .hero {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    padding: 24px 0 28px;
+  }
+  h1 {
+    font: 700 40px/1.05 var(--display);
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .sub {
+    font-size: 19px;
+    color: var(--muted);
+    margin: 6px 0 16px;
+  }
+  .btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .info {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    border-block: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  .info div {
+    text-align: center;
+    padding: 0 8px;
+    border-left: 1px solid var(--line);
+    min-width: 0;
+  }
+  .info div:first-child {
+    border-left: 0;
+  }
+  .info small {
+    display: block;
+    font: 600 10.5px/1 var(--sans);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .info b {
+    display: block;
+    font: 700 19px/1.2 var(--display);
+    margin: 8px 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .info span {
+    display: block;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .install {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px 10px 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    max-width: 520px;
+  }
+  .install code {
+    flex: 1;
+    font: 14px var(--mono);
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .install .pill {
+    border: 0;
+    cursor: pointer;
+    font-family: var(--sans);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 48px;
+    margin-top: 32px;
+  }
+  h2 {
+    font: 700 20px/1.2 var(--display);
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .notes {
+    margin-top: 28px;
+  }
+  .notes summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .notes summary::-webkit-details-marker {
+    display: none;
+  }
+  .notes summary h2 {
+    display: inline;
+  }
+  .notes summary::after {
+    content: " ▾";
+    color: var(--muted);
+  }
+  .notes:not([open]) summary::after {
+    content: " ▸";
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .box h3 {
+    margin: 0 0 10px;
+    font: 600 13px/1 var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+  }
+  .ver {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .ver b {
+    color: var(--ink);
+  }
+  .box ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    font-size: 14px;
+  }
+  .box li {
+    padding: 7px 0;
+    border-top: 1px solid var(--line);
+  }
+  .box li:first-child {
+    border-top: 0;
+  }
+  .box a:hover {
+    color: var(--accent);
+  }
+  .more {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .more small {
+    display: block;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  @media (max-width: 860px) {
+    .crumbs {
+      padding-top: 18px;
+    }
+    .hero {
+      align-items: flex-start;
+      gap: 18px;
+    }
+    .hero :global(.hero-icon) {
+      width: 88px !important;
+      height: 88px !important;
+      border-radius: 20px !important;
+    }
+    h1 {
+      font-size: 30px;
+    }
+    .info {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 16px;
+    }
+    .info div:nth-child(3n + 1) {
+      border-left: 0;
+    }
+    .cols {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+  }
+</style>

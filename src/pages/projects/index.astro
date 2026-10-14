@@ -1,0 +1,77 @@
+---
+import AppRow from "../../components/AppRow.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Shelf from "../../components/Shelf.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getShelf, SHELVES } from "../../lib/catalog";
+
+const [apps, tools] = await Promise.all([getShelf("apps"), getShelf("tools")]);
+---
+
+<BaseLayout
+  title="Apps · Javi Aguilar"
+  description="Native Mac apps, desktop and web tools, and websites by Javi Aguilar."
+  nav="apps"
+>
+  <header class="head">
+    <h1 class="page-title">Apps</h1>
+    <p>Native Mac apps, tools for game developers and the websites I run.</p>
+  </header>
+
+  <Shelf title={SHELVES.apps.title} note={SHELVES.apps.note} id="apps">
+    <div class="grid">
+      {apps.map((item) => (
+        <AppRow item={item} />
+      ))}
+    </div>
+  </Shelf>
+
+  <Shelf title={SHELVES.tools.title} id="tools">
+    <div class="cards">
+      {tools.map((item) => (
+        <ProjectCard item={item} variant="shot" />
+      ))}
+    </div>
+  </Shelf>
+
+  <p class="more">
+    Looking for frameworks and packages? <a href="/projects/libraries/">Browse libraries</a>.
+  </p>
+</BaseLayout>
+
+<style>
+  .head {
+    padding: 44px 0 4px;
+  }
+  .head p {
+    color: var(--muted);
+    margin: 8px 0 0;
+    font-size: 16px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 28px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .more {
+    margin-top: 40px;
+    color: var(--muted);
+  }
+  .more a {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .head {
+      padding-top: 24px;
+    }
+    .grid,
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

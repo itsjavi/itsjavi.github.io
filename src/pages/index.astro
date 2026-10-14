@@ -1,112 +1,216 @@
 ---
-import { FlaskConical, Rocket } from "@lucide/astro";
-import { getCollection } from "astro:content";
-import ContentCard from "../components/ContentCard.astro";
-import { IS_BLOG_ENABLED } from "../config";
+import { Image } from "astro:assets";
+import AppRow from "../components/AppRow.astro";
+import FeaturedCard from "../components/FeaturedCard.astro";
+import LibRow from "../components/LibRow.astro";
+import PostCard from "../components/PostCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import Shelf from "../components/Shelf.astro";
+import { PROFILE, SOCIAL_LINKS } from "../config";
 import experiments from "../data/experiments.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getFeatured, getShelf, SHELVES } from "../lib/catalog";
+import { getPosts } from "../lib/posts";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const [featured, apps, tools, libs, posts] = await Promise.all([
+  getFeatured(),
+  getShelf("apps"),
+  getShelf("tools"),
+  getShelf("libs"),
+  getPosts(),
+]);
+// Libraries with their own icon get a card; the rest are listed compactly.
+const frameworks = libs.filter((p) => p.data.icon);
+const packages = libs.filter((p) => !p.data.icon);
+const experimentImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/experiments/*.webp",
+  { eager: true },
 );
-const projects = (await getCollection("projects")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
-const recentPosts = posts.slice(0, 3);
-const recentProjects = projects.slice(0, 3);
-const recentExperiments = experiments.slice(0, 3);
 ---
 
-<BaseLayout sideBarActiveItemID="home">
-  <section class="mb-12 mt-5" aria-labelledby="intro-title">
-    <p class="py-1 text-xl">Hi there! 👋</p>
-    <h1 id="intro-title" class="text-5xl font-bold">
-      I'm Javi Aguilar
-    </h1>
-    <p class="py-3 text-3xl font-bold">Full-Stack Software Engineer</p>
-    <p class="py-2 text-lg">
-      📍 Berlin. Passionate about web technologies and crafting good user experiences. I help teams
-      launch successful products while experimenting and exploring new technologies through many
-      side projects.
-    </p>
-    <div class="flex flex-wrap gap-2 py-2 text-lg" aria-label="Technologies">
-      {["JavaScript", "TypeScript", "CSS", "HTML", "React", "Astro", "AWS", "Cloudflare"].map(
-        (item) => (
-          <span class="badge badge-sm badge-outline rounded-full">{item}</span>
-        ),
-      )}
+<BaseLayout nav="discover">
+  <section class="intro">
+    <div>
+      <p class="role">
+        {PROFILE.role} · {PROFILE.location}
+      </p>
+      <h1>Apps and libraries by {PROFILE.name}</h1>
+      <p>{PROFILE.intro}</p>
     </div>
+    <nav class="links" aria-label="Elsewhere">
+      {SOCIAL_LINKS.filter((l) => l.label !== "Mastodon").map((l) => (
+        <a href={l.href} rel="me">
+          {l.label}
+        </a>
+      ))}
+      <a href="/rss.xml">RSS</a>
+    </nav>
   </section>
 
-  {IS_BLOG_ENABLED && recentPosts.length > 0 && (
-    <section class="mb-10" aria-labelledby="recent-posts-title">
-      <h2 id="recent-posts-title" class="mb-2 text-3xl font-bold">
-        Recent posts
-      </h2>
-      <div class="divide-y divide-base-content/10">
-        {recentPosts.map((post) => (
-          <div class="py-2">
-            <ContentCard
-              title={post.data.title}
-              image={post.data.heroImage}
-              description={post.data.description}
-              href={`/blog/${post.id}`}
-              badge={post.data.badge}
-            />
-          </div>
+  <section class="featured" aria-label="Featured">
+    {featured.map((item, i) => (
+      <FeaturedCard item={item} priority={i === 0} />
+    ))}
+  </section>
+
+  <Shelf title={SHELVES.apps.title} note={SHELVES.apps.note} href="/projects/">
+    <div class="grid3">
+      {apps.map((item) => (
+        <AppRow item={item} />
+      ))}
+    </div>
+  </Shelf>
+
+  <Shelf title={SHELVES.tools.title} href="/projects/#tools">
+    <div class="grid2">
+      {tools.map((item) => (
+        <ProjectCard item={item} variant="shot" />
+      ))}
+    </div>
+  </Shelf>
+
+  <Shelf title={SHELVES.libs.title} note={SHELVES.libs.note} href="/projects/libraries/">
+    <div class="grid2">
+      {frameworks.map((item) => (
+        <ProjectCard item={item} />
+      ))}
+    </div>
+    <div class="libs">
+      {packages.map((item) => (
+        <LibRow item={item} />
+      ))}
+    </div>
+  </Shelf>
+
+  {posts.length > 0 && (
+    <Shelf title="Writing" href="/blog/" linkLabel="All posts">
+      <div class="grid3">
+        {posts.slice(0, 3).map((post) => (
+          <PostCard post={post} />
         ))}
       </div>
-    </section>
+    </Shelf>
   )}
 
-  <section aria-labelledby="latest-projects-title">
-    <h2 id="latest-projects-title" class="mb-2 text-3xl font-bold">
-      Latest projects <Rocket class="inline-block" aria-hidden="true" />
-    </h2>
-    <div class="divide-y divide-base-content/10">
-      {recentProjects.map((project) => (
-        <div class="py-2">
-          <ContentCard
-            title={project.data.title}
-            image={project.data.img}
-            description={project.data.desc}
-            href={`/projects/${project.id}`}
-            badge={project.data.badge}
-          />
-        </div>
-      ))}
+  <Shelf title="CSS experiments" href="/experiments/">
+    <div class="exps">
+      {experiments.slice(0, 4).map((e) => {
+        const image = experimentImages[`../assets/experiments/${e.img.split("/").pop()}`]?.default;
+        return (
+          <a class="exp" href={`/experiments/${e.slug}/`}>
+            {image && (
+              <Image
+                src={image}
+                alt=""
+                widths={[320, 560]}
+                sizes="(max-width: 860px) 45vw, 280px"
+              />
+            )}
+            <span>{e.title}</span>
+          </a>
+        );
+      })}
     </div>
-    {projects.length > recentProjects.length && (
-      <div class="mt-5 text-center">
-        <a href="/projects" class="btn btn-outline">
-          View more projects
-        </a>
-      </div>
-    )}
-  </section>
-
-  <section class="mt-10" aria-labelledby="latest-experiments-title">
-    <h2 id="latest-experiments-title" class="mb-2 text-3xl font-bold">
-      Latest experiments <FlaskConical class="inline-block" aria-hidden="true" />
-    </h2>
-    <div class="divide-y divide-base-content/10">
-      {recentExperiments.map((experiment) => (
-        <div class="py-2">
-          <ContentCard
-            title={experiment.title}
-            image={experiment.img}
-            description={experiment.desc}
-            href={`/experiments/${experiment.slug}`}
-          />
-        </div>
-      ))}
-    </div>
-    {experiments.length > recentExperiments.length && (
-      <div class="mt-5 text-center">
-        <a href="/experiments" class="btn btn-outline">
-          View more experiments
-        </a>
-      </div>
-    )}
-  </section>
+  </Shelf>
 </BaseLayout>
+
+<style>
+  .intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 44px 0 28px;
+  }
+  .intro .role {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  h1 {
+    font: 700 34px/1.1 var(--display);
+    letter-spacing: -0.025em;
+    margin: 0 0 8px;
+  }
+  .intro p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 58ch;
+    font-size: 16px;
+  }
+  .links {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .links a {
+    color: var(--accent);
+  }
+  .featured {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 20px;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 28px;
+  }
+  .grid3:has(.post) {
+    gap: 20px;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .libs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 28px;
+    margin-top: 12px;
+  }
+  .exps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .exp img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .exp span {
+    display: block;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .exp:hover span {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .intro {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px 0 18px;
+      gap: 12px;
+    }
+    h1 {
+      font-size: 28px;
+    }
+    .featured,
+    .grid3,
+    .grid2,
+    .libs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .exps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

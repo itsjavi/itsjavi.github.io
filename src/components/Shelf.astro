@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  note?: string;
+  href?: string;
+  linkLabel?: string;
+  id?: string;
+}
+
+const { title, note, href, linkLabel = "See all", id } = Astro.props;
+---
+
+<section class="shelf" id={id} aria-label={title}>
+  <header>
+    <h2>{title}</h2>
+    {note && <small>{note}</small>}
+    {href && <a href={href}>{linkLabel}</a>}
+  </header>
+  <slot />
+</section>
+
+<style>
+  .shelf {
+    margin-top: 44px;
+    scroll-margin-top: 80px;
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin-bottom: 14px;
+  }
+  h2 {
+    font: 700 22px/1.2 var(--display);
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  small {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  a {
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 14.5px;
+    white-space: nowrap;
+  }
+</style>

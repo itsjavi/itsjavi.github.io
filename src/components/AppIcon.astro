@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import type { Project } from "../lib/catalog";
+import { iconImage } from "../lib/catalog";
+
+interface Props {
+  project: Project;
+  size: number;
+  class?: string;
+}
+
+const { project, size, class: className } = Astro.props;
+const { icon, iconTile, iconPixelated, monogram, hue, name } = project.data;
+const image = iconImage(icon);
+const radius = Math.round(size * 0.225);
+const inner = Math.round(size * (iconPixelated ? 0.68 : 0.64));
+const mono = monogram ?? name.slice(0, 2).toLowerCase();
+---
+
+{image && !iconTile ? (
+  <Image
+    src={image}
+    alt=""
+    width={size}
+    height={size}
+    densities={[1, 2]}
+    class:list={["app-icon", className]}
+    style={`border-radius:${radius}px`}
+  />
+) : image ? (
+  <span
+    class:list={["app-icon tile", className]}
+    style={`width:${size}px;height:${size}px;border-radius:${radius}px;background:${iconTile}`}
+  >
+    {iconPixelated ? (
+      <img src={image.src} alt="" width={inner} height={inner} class="pixel" />
+    ) : (
+      <Image src={image} alt="" width={inner} height={inner} densities={[1, 2]} />
+    )}
+  </span>
+) : (
+  <span
+    class:list={["app-icon tile mono", className]}
+    style={`width:${size}px;height:${size}px;border-radius:${radius}px;--hue:${hue};font-size:${Math.round(size * (mono.length > 2 ? 0.28 : 0.34))}px`}
+    aria-hidden="true"
+  >
+    {mono}
+  </span>
+)}
+
+<style>
+  .app-icon {
+    flex: none;
+    display: block;
+  }
+  .tile {
+    display: inline-grid;
+    place-items: center;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  }
+  .pixel {
+    image-rendering: pixelated;
+  }
+  .mono {
+    background: linear-gradient(
+      160deg,
+      light-dark(hsl(var(--hue) 70% 94%), hsl(var(--hue) 35% 26%)),
+      light-dark(hsl(var(--hue) 60% 86%), hsl(var(--hue) 40% 18%))
+    );
+    color: light-dark(hsl(var(--hue) 55% 30%), hsl(var(--hue) 70% 82%));
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+import { badgeFor, type CatalogItem, pillLabel } from "../lib/catalog";
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  item: CatalogItem;
+}
+
+const { item } = Astro.props;
+const badge = badgeFor(item);
+const version = item.release
+  ? `v${item.release.version}`
+  : item.data.action === "build"
+    ? "Build from source"
+    : undefined;
+const meta = [item.data.category ?? item.data.kind, version].filter(Boolean).join(" · ");
+---
+
+<a class="row" href={`/projects/${item.id}/`}>
+  <AppIcon project={item} size={64} />
+  <div class="txt">
+    <b>
+      {item.data.name}
+      {badge && <span class="badge">{badge}</span>}
+    </b>
+    <span class="sub">{item.data.tagline}</span>
+    <span class="meta">{meta}</span>
+  </div>
+  <span class="pill">{pillLabel(item)}</span>
+</a>
+
+<style>
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .txt {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 13.5px;
+    text-wrap: pretty;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .row:hover b {
+    color: var(--accent);
+  }
+</style>

@@ -1,44 +1,56 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import GiscusComments from "../../components/GiscusComments.astro";
+import ProjectDetail from "../../components/ProjectDetail.astro";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { getCatalog, type Project } from "../../lib/catalog";
 
 export async function getStaticPaths() {
-  return (await getCollection("projects")).map((entry) => ({
-    params: { id: entry.id },
-    props: { entry },
+  return (await getCollection("projects")).map((project) => ({
+    params: { id: project.id },
+    props: { project },
   }));
 }
 
 interface Props {
-  entry: CollectionEntry<"projects">;
+  project: Project;
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { project } = Astro.props;
+const { Content } = await render(project);
+const item = (await getCatalog()).find((p) => p.id === project.id);
 ---
 
-<ArticleLayout
-  title={entry.data.title}
-  description={entry.data.desc}
-  image={entry.data.img}
-  badge={entry.data.badge}
-  section="projects"
->
-  <Content />
-  {entry.data.url && (
-    <p class="mt-6">
-      <a
-        href={entry.data.url}
-        class="btn btn-outline no-underline"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Visit Project
-      </a>
+{item ? (
+  <ProjectDetail item={item}>
+    <Content />
+  </ProjectDetail>
+) : (
+  <ArticleLayout
+    title={project.data.name}
+    description={project.data.description}
+    image={project.data.img}
+    noindex
+  >
+    <p slot="notice" class="retired">
+      <b>Retired.</b> {project.data.name} is no longer maintained. This page stays for reference,
+      but its website and code may no longer be available.
     </p>
-  )}
-  <hr />
-  <GiscusComments />
-</ArticleLayout>
+    <Content frontmatter={project.data} />
+    <GiscusComments slot="after" />
+  </ArticleLayout>
+)}
+
+<style>
+  .retired {
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--pill);
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  .retired b {
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,75 @@
+---
+import LibRow from "../../components/LibRow.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Shelf from "../../components/Shelf.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getShelf } from "../../lib/catalog";
+
+const libs = await getShelf("libs");
+const frameworks = libs.filter((p) => p.data.icon);
+const packages = libs.filter((p) => !p.data.icon);
+---
+
+<BaseLayout
+  title="Libraries · Javi Aguilar"
+  description="Open source frameworks, libraries and agent plugins by Javi Aguilar."
+  nav="libraries"
+>
+  <header class="head">
+    <h1 class="page-title">Libraries</h1>
+    <p>
+      Open source frameworks and packages, mostly for React Router, Node.js and the web platform.
+      Many live at <a href="https://github.com/dendrell">@dendrell</a>.
+    </p>
+  </header>
+
+  <Shelf title="Frameworks" id="frameworks">
+    <div class="cards">
+      {frameworks.map((item) => (
+        <ProjectCard item={item} />
+      ))}
+    </div>
+  </Shelf>
+
+  <Shelf title="Packages" note="MIT licensed" id="packages">
+    <div class="list">
+      {packages.map((item) => (
+        <LibRow item={item} />
+      ))}
+    </div>
+  </Shelf>
+</BaseLayout>
+
+<style>
+  .head {
+    padding: 44px 0 4px;
+  }
+  .head p {
+    color: var(--muted);
+    margin: 8px 0 0;
+    font-size: 16px;
+    max-width: 62ch;
+  }
+  .head a {
+    color: var(--accent);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 28px;
+  }
+  @media (max-width: 860px) {
+    .head {
+      padding-top: 24px;
+    }
+    .cards,
+    .list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

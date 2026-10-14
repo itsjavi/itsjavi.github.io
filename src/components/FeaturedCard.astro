@@ -1,0 +1,147 @@
+---
+import { Image } from "astro:assets";
+import {
+  type CatalogItem,
+  formatDate,
+  isRecent,
+  pillLabel,
+  screenshotImages,
+  shortVersion,
+} from "../lib/catalog";
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  item: CatalogItem;
+  priority?: boolean;
+}
+
+const { item, priority = false } = Astro.props;
+const { release } = item;
+const fresh = isRecent(release);
+const eyebrow = fresh && release ? `New release · ${formatDate(release.date)}` : "Open source";
+const title = release ? `${item.data.name} ${shortVersion(release.version)}` : item.data.name;
+// The release summary is only news while the release is recent.
+const text = (fresh && release?.summary) || item.data.featureText || item.data.description;
+const [shot] = screenshotImages(item);
+---
+
+<a
+  class="feat"
+  href={`/projects/${item.id}/`}
+  style={`--tint:${item.data.color ?? "linear-gradient(150deg,#2a2f3a,#14161c)"}`}
+>
+  <div class="head">
+    <div class="eyebrow">{eyebrow}</div>
+    <h3>{title}</h3>
+    <p>{text}</p>
+  </div>
+  <div class="stage">
+    {shot && (
+      <Image
+        src={shot}
+        alt=""
+        widths={[640, 960, 1280]}
+        sizes="(max-width: 860px) 150vw, 760px"
+        loading={priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : undefined}
+      />
+    )}
+  </div>
+  <div class="foot">
+    <AppIcon project={item} size={44} />
+    <div>
+      <b>{item.data.name}</b>
+      <span>{item.data.tagline}</span>
+    </div>
+    <span class="pill">{pillLabel(item)}</span>
+  </div>
+</a>
+
+<style>
+  .feat {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 380px;
+    background: var(--tint);
+    color: #fff;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+  .head {
+    padding: 22px 24px 0;
+  }
+  .eyebrow {
+    opacity: 0.8;
+  }
+  h3 {
+    font: 700 28px/1.1 var(--display);
+    letter-spacing: -0.02em;
+    margin: 8px 0 6px;
+  }
+  p {
+    margin: 0;
+    opacity: 0.88;
+    max-width: 44ch;
+  }
+  .stage {
+    position: relative;
+    overflow: hidden;
+    min-height: 150px;
+  }
+  .stage img {
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    width: 118%;
+    max-width: none;
+    height: auto;
+    border-radius: 10px;
+    box-shadow:
+      0 18px 50px rgb(0 0 0 / 0.45),
+      0 0 0 1px rgb(255 255 255 / 0.12);
+    transition: transform 0.4s ease;
+  }
+  .feat:hover .stage img {
+    transform: translateY(-6px);
+  }
+  .foot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: rgb(16 17 22 / 0.62);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .foot div {
+    min-width: 0;
+  }
+  .foot b {
+    display: block;
+  }
+  .foot span:not(.pill) {
+    display: block;
+    font-size: 13px;
+    opacity: 0.75;
+  }
+  .pill {
+    margin-left: auto;
+    background: rgb(255 255 255 / 0.22);
+    color: #fff;
+  }
+  @media (max-width: 860px) {
+    .feat {
+      min-height: 340px;
+    }
+    .stage img {
+      width: 150%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stage img {
+      transition: none;
+    }
+  }
+</style>

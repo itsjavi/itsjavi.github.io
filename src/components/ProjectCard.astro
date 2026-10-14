@@ -1,0 +1,109 @@
+---
+import { Image } from "astro:assets";
+import { badgeFor, type CatalogItem, pillLabel, screenshotImages } from "../lib/catalog";
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  item: CatalogItem;
+  /** "shot" shows the first screenshot beside the text; "compact" shows a large icon. */
+  variant?: "shot" | "compact";
+}
+
+const { item, variant = "compact" } = Astro.props;
+const [shot] = screenshotImages(item);
+const badge = badgeFor(item);
+const meta = [item.release && `v${item.release.version}`, item.data.license]
+  .filter(Boolean)
+  .join(" · ");
+---
+
+<a class:list={["card", "pcard", `v-${variant}`]} href={`/projects/${item.id}/`}>
+  {variant === "shot" && shot && (
+    <Image
+      src={shot}
+      alt=""
+      widths={[480, 720]}
+      sizes="(max-width: 860px) 92vw, 260px"
+      class="shot"
+    />
+  )}
+  {variant === "compact" && <AppIcon project={item} size={72} />}
+  <div class="txt">
+    {variant === "shot" && <AppIcon project={item} size={52} />}
+    <b>
+      {item.data.name}
+      {badge && <span class="badge">{badge}</span>}
+    </b>
+    <p>{item.data.description}</p>
+    {variant === "compact" && meta && <span class="meta">{meta}</span>}
+    {variant === "shot" && <span class="pill">{pillLabel(item)}</span>}
+  </div>
+  {variant === "compact" && <span class="pill top">{pillLabel(item)}</span>}
+</a>
+
+<style>
+  .pcard {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+  .pcard:hover {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  }
+  .v-compact {
+    align-items: flex-start;
+  }
+  .shot {
+    width: 46%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top left;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .txt {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: 700 19px/1.2 var(--display);
+    letter-spacing: -0.015em;
+  }
+  .shot + .txt b {
+    margin-top: 6px;
+  }
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .txt .pill {
+    margin-top: 8px;
+    align-self: flex-start;
+  }
+  @media (max-width: 860px) {
+    .shot {
+      width: 100%;
+    }
+    .v-shot {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .pill.top {
+      display: none;
+    }
+  }
+</style>
