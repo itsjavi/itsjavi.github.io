@@ -12,7 +12,8 @@
     "lint:oxlint": "oxlint . --deny-warnings",
     "lint:astro": "eslint \"src/**/*.astro\" --max-warnings 0",
     "check": "astro check",
-    "lint": "pnpm lint:oxlint && pnpm lint:astro && pnpm check"
+    "lint": "pnpm lint:oxlint && pnpm lint:astro && pnpm check",
+    "new:post": "node scripts/new-post.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.3",

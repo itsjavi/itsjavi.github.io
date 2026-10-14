@@ -1,46 +1,46 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
-import ContentCard from "../../../components/ContentCard.astro";
+import PostList from "../../../components/PostList.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPosts, type Post } from "../../../lib/posts";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getPosts();
   const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
   return tags.map((tag) => ({
     params: { tag },
-    props: {
-      tag,
-      posts: posts
-        .filter((post) => post.data.tags.includes(tag))
-        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
-    },
+    props: { tag, posts: posts.filter((post) => post.data.tags.includes(tag)) },
   }));
 }
 
 interface Props {
   tag: string;
-  posts: CollectionEntry<"blog">[];
+  posts: Post[];
 }
 
 const { tag, posts } = Astro.props;
 ---
 
-<BaseLayout title={`${tag} posts | Javi Aguilar`} sideBarActiveItemID="blog">
-  <h1 class="mb-5 text-3xl font-bold">Posts tagged “{tag}”</h1>
-  <div class="divide-y divide-base-content/10">
-    {posts.map((post) => (
-      <div class="py-2">
-        <ContentCard
-          title={post.data.title}
-          image={post.data.heroImage}
-          description={post.data.description}
-          href={`/blog/${post.id}`}
-          badge={post.data.badge}
-          tags={post.data.tags}
-          tagHrefPrefix="/blog/tag"
-        />
-      </div>
-    ))}
-  </div>
+<BaseLayout title={`Posts tagged ${tag} · Javi Aguilar`} nav="writing">
+  <header class="head">
+    <p class="crumbs">
+      <a href="/blog/">Writing</a>
+    </p>
+    <h1 class="page-title">#{tag}</h1>
+  </header>
+  <PostList {posts} />
 </BaseLayout>
+
+<style>
+  .head {
+    padding: 28px 0 12px;
+    border-bottom: 1px solid var(--line);
+    max-width: 760px;
+  }
+  .crumbs {
+    margin: 0 0 10px;
+    font-size: 14px;
+  }
+  .crumbs a {
+    color: var(--accent);
+  }
+</style>

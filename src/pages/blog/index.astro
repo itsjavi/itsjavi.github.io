@@ -1,0 +1,42 @@
+---
+import PostList from "../../components/PostList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPosts } from "../../lib/posts";
+
+const posts = await getPosts();
+---
+
+<BaseLayout
+  title="Writing · Javi Aguilar"
+  description="Posts about the apps and libraries I make, and the web."
+  nav="writing"
+>
+  <header class="head">
+    <h1 class="page-title">Writing</h1>
+    <p>
+      Notes on the things I build, and on the web. <a href="/rss.xml">RSS feed</a>
+    </p>
+  </header>
+  <PostList {posts} />
+</BaseLayout>
+
+<style>
+  .head {
+    padding: 44px 0 12px;
+    border-bottom: 1px solid var(--line);
+    max-width: 760px;
+  }
+  .head p {
+    color: var(--muted);
+    margin: 8px 0 0;
+    font-size: 16px;
+  }
+  .head a {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .head {
+      padding-top: 24px;
+    }
+  }
+</style>

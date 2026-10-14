@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { readingTime } from "../lib/posts";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const label = post.data.projects[0] ?? post.data.tags[0];
+const date = new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(
+  post.data.pubDate,
+);
+---
+
+<a class="card post" href={`/blog/${post.id}/`}>
+  {label && <div class="eyebrow">{label}</div>}
+  <h3>{post.data.title}</h3>
+  <time datetime={post.data.pubDate.toISOString()}>
+    {date} · {readingTime(post.body)}
+  </time>
+</a>
+
+<style>
+  .post {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 150px;
+  }
+  .post:hover {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  }
+  .eyebrow {
+    color: var(--accent);
+  }
+  h3 {
+    margin: 0;
+    font: 650 18px/1.25 var(--display);
+    letter-spacing: -0.01em;
+  }
+  time {
+    margin-top: auto;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
