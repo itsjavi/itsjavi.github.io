@@ -7,7 +7,7 @@ kind: Library
 category: Developer tools
 order: 21
 icon: storylite.png
-iconTile: "#ffffff"
+iconTile: "linear-gradient(160deg, #ffffff, #e3eeff)"
 screenshots:
   - storylite/screenshot.png
 repo: itsjavi/storylite

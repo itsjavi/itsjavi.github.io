@@ -7,7 +7,7 @@ kind: Framework
 category: Web framework
 order: 20
 icon: lumiose.svg
-iconTile: "#1d1b33"
+iconTile: "linear-gradient(160deg, #4a4390, #221f48)"
 screenshots:
   - lumiose/chiptune-tracker.png
   - lumiose/travel-journal.png
