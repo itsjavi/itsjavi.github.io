@@ -1,31 +1,67 @@
-<giscus-comments class="block">
+---
+interface Props {
+  /** Discussion title to use instead of the page path, e.g. after a page moved. */
+  term?: string;
+}
+
+const { term } = Astro.props;
+---
+
+<giscus-comments class="comments" data-term={term}>
   <div class="giscus"></div>
 </giscus-comments>
 
 <script>
-  // Initialize after ClientRouter finishes replaying page scripts so it cannot replay this widget.
-  document.addEventListener("astro:page-load", () => {
-    for (const host of document.querySelectorAll("giscus-comments")) {
-      if (host.querySelector("script")) continue;
+  // Follows the site's theme switch; "system" defers to the OS like the rest of the site.
+  function giscusTheme() {
+    const theme = document.documentElement.dataset.theme;
+    return theme === "light" || theme === "dark" ? theme : "preferred_color_scheme";
+  }
+
+  window.addEventListener("themechange", () => {
+    for (const frame of document.querySelectorAll<HTMLIFrameElement>("iframe.giscus-frame")) {
+      frame.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: giscusTheme() } } },
+        "https://giscus.app",
+      );
+    }
+  });
+
+  class GiscusComments extends HTMLElement {
+    connectedCallback() {
+      if (this.querySelector("script")) return;
       const script = document.createElement("script");
       script.src = "https://giscus.app/client.js";
       script.async = true;
       script.crossOrigin = "anonymous";
+      const term = this.dataset.term;
       Object.assign(script.dataset, {
         repo: "itsjavi/itsjavi.github.io",
         repoId: "MDEwOlJlcG9zaXRvcnk2ODMzMzcwNw==",
         category: "Pages Discussion",
         categoryId: "DIC_kwDOBBKwi84CjvAI",
-        mapping: "pathname",
+        mapping: term ? "specific" : "pathname",
+        ...(term ? { term } : {}),
         strict: "0",
         reactionsEnabled: "1",
         emitMetadata: "0",
         inputPosition: "top",
-        theme: "transparent_dark",
+        theme: giscusTheme(),
         lang: "en",
         loading: "lazy",
       });
-      host.append(script);
+      this.append(script);
     }
-  });
+  }
+  if (!customElements.get("giscus-comments"))
+    customElements.define("giscus-comments", GiscusComments);
 </script>
+
+<style>
+  .comments {
+    display: block;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+</style>

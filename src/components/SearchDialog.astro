@@ -1,0 +1,230 @@
+---
+import experiments from "../data/experiments.json";
+import { getCatalog, SHELVES } from "../lib/catalog";
+import { getPosts } from "../lib/posts";
+
+const catalog = await getCatalog();
+const posts = await getPosts();
+const items = [
+  ...catalog.map((p) => ({
+    title: p.data.name,
+    text: p.data.tagline,
+    group: p.data.shelf ? SHELVES[p.data.shelf].title : "Projects",
+    href: `/projects/${p.id}/`,
+  })),
+  ...posts.map((p) => ({
+    title: p.data.title,
+    text: "Post",
+    group: "Writing",
+    href: `/blog/${p.id}/`,
+  })),
+  ...experiments.map((e) => ({
+    title: e.title,
+    text: "CSS experiment",
+    group: "Experiments",
+    href: `/experiments/${e.slug}/`,
+  })),
+];
+---
+
+<dialog class="search-dialog" aria-label="Search">
+  <form method="dialog" class="field">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.4"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="m20 20-3.5-3.5"></path>
+    </svg>
+    <input
+      id="site-search"
+      type="search"
+      placeholder="Search apps, libraries and posts"
+      autocomplete="off"
+      aria-controls="site-search-results"
+    />
+    <button type="submit" class="close">
+      Esc
+    </button>
+  </form>
+  <ul id="site-search-results" role="listbox" aria-label="Results"></ul>
+  <p class="empty" hidden>
+    Nothing matches that. Try a project name or a word from its description.
+  </p>
+  <script type="application/json" data-search-index set:html={JSON.stringify(items)} />
+</dialog>
+
+<script>
+  type Item = { title: string; text: string; group: string; href: string };
+
+  const dialog = document.querySelector<HTMLDialogElement>(".search-dialog")!;
+  const input = dialog.querySelector<HTMLInputElement>("input")!;
+  const list = dialog.querySelector<HTMLUListElement>("ul")!;
+  const empty = dialog.querySelector<HTMLParagraphElement>(".empty")!;
+  const items: Item[] = JSON.parse(dialog.querySelector("[data-search-index]")!.textContent!);
+  let active = 0;
+
+  function render() {
+    const q = input.value.trim().toLowerCase();
+    const results = items.filter(
+      (i) => !q || `${i.title} ${i.text} ${i.group}`.toLowerCase().includes(q),
+    );
+    active = Math.min(active, Math.max(results.length - 1, 0));
+    list.replaceChildren(
+      ...results.slice(0, 12).map((item, index) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", String(index === active));
+        const a = document.createElement("a");
+        a.href = item.href;
+        const title = document.createElement("b");
+        title.textContent = item.title;
+        const text = document.createElement("span");
+        text.textContent = item.text;
+        const group = document.createElement("small");
+        group.textContent = item.group;
+        a.append(title, text, group);
+        li.append(a);
+        return li;
+      }),
+    );
+    empty.hidden = results.length > 0;
+  }
+
+  function open() {
+    if (dialog.open) return;
+    input.value = "";
+    active = 0;
+    render();
+    dialog.showModal();
+    input.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    if ((event.target as Element).closest("[data-search-open]")) open();
+  });
+  document.addEventListener("keydown", (event) => {
+    const typing = (event.target as Element).closest("input, textarea, [contenteditable]");
+    if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !typing)) {
+      event.preventDefault();
+      open();
+    }
+  });
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  input.addEventListener("input", () => {
+    active = 0;
+    render();
+  });
+  input.addEventListener("keydown", (event) => {
+    const options = list.querySelectorAll("li");
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      active = (active + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length;
+      options.forEach((li, i) => li.setAttribute("aria-selected", String(i === active)));
+      options[active]?.scrollIntoView({ block: "nearest" });
+    } else if (event.key === "Enter") {
+      const link = options[active]?.querySelector("a");
+      if (link) {
+        event.preventDefault();
+        link.click();
+      }
+    }
+  });
+</script>
+
+<style>
+  .search-dialog {
+    width: min(560px, calc(100vw - 32px));
+    max-height: min(560px, calc(100dvh - 120px));
+    margin: 12vh auto auto;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 24px 60px rgb(0 0 0 / 0.25);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+  }
+  .search-dialog[open] {
+    display: flex;
+  }
+  .search-dialog::backdrop {
+    background: rgb(10 12 16 / 0.45);
+    backdrop-filter: blur(4px);
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--ink);
+    font: 16px var(--sans);
+  }
+  input::-webkit-search-cancel-button {
+    display: none;
+  }
+  .close {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--muted);
+    font: 12px var(--sans);
+    padding: 2px 6px;
+    cursor: pointer;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+  }
+  ul :global(a) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0 12px;
+    padding: 9px 12px;
+    border-radius: 10px;
+  }
+  ul :global(li[aria-selected="true"] a),
+  ul :global(a:hover) {
+    background: var(--pill);
+  }
+  ul :global(b) {
+    font-weight: 600;
+  }
+  ul :global(span) {
+    grid-column: 1;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  ul :global(small) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .empty {
+    margin: 0;
+    padding: 20px;
+    color: var(--muted);
+  }
+</style>

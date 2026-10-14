@@ -1,21 +1,19 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import BaseHead from "../components/BaseHead.astro";
+import SearchDialog from "../components/SearchDialog.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
-import SiteSidebar from "../components/SiteSidebar.astro";
+import TabBar from "../components/TabBar.astro";
 import ThirdParties from "../components/ThirdParties.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../config";
+import { type NavId, SITE_DESCRIPTION, SITE_TITLE } from "../config";
 
 export interface Props {
   title?: string;
   description?: string;
   image?: string;
   ogType?: string;
-  sideBarActiveItemID?: string;
-  includeSidebar?: boolean;
-  wide?: boolean;
-  transitions?: boolean;
+  nav?: NavId;
+  noindex?: boolean;
 }
 
 const {
@@ -23,30 +21,24 @@ const {
   description = SITE_DESCRIPTION,
   image,
   ogType,
-  sideBarActiveItemID,
-  includeSidebar = true,
-  wide = false,
-  transitions = true,
+  nav,
+  noindex,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="site">
+<html lang="en">
   <head>
-    <BaseHead {title} {description} {image} {ogType} />
-    {transitions && <ClientRouter />}
+    <BaseHead {title} {description} {image} {ogType} {noindex} />
     <ThirdParties />
   </head>
-  <body class="min-h-screen bg-base-100 text-base-content">
-    {includeSidebar && <SiteSidebar activeItem={sideBarActiveItemID} />}
-    <div class:list={["min-h-screen", { "lg:pl-[19rem]": includeSidebar }]}>
-      <SiteHeader activeItem={sideBarActiveItemID} />
-      <div class="flex justify-center">
-        <main class:list={["w-full flex-1 px-6 pb-6 pt-10", wide ? "max-w-none" : "max-w-[900px]"]}>
-          <slot />
-        </main>
-      </div>
-      <SiteFooter />
-    </div>
+  <body>
+    <SiteHeader active={nav} />
+    <main class="page">
+      <slot />
+    </main>
+    <SiteFooter />
+    <TabBar active={nav} />
+    <SearchDialog />
   </body>
 </html>

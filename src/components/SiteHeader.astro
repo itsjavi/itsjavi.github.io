@@ -1,100 +1,184 @@
 ---
-import SidebarContent from "./SidebarContent.astro";
+import profile from "../assets/profile.jpg";
+import { Image } from "astro:assets";
+import { NAV_ITEMS, type NavId, PROFILE } from "../config";
+import ThemeToggle from "./ThemeToggle.astro";
 
-export interface Props {
-  activeItem?: string;
+interface Props {
+  active?: NavId;
 }
 
-const { activeItem } = Astro.props;
+const { active } = Astro.props;
 ---
 
-<header class="sticky top-0 z-30 h-16 bg-base-100/90 shadow-sm backdrop-blur lg:hidden">
-  <div class="navbar h-16 min-h-16">
-    <div class="navbar-start">
-      <button
-        type="button"
-        class="btn btn-square btn-ghost"
-        aria-label="Open navigation"
-        aria-controls="site-drawer"
-        aria-expanded="false"
-        data-drawer-open
+<header class="top">
+  <div class="bar">
+    <a class="me" href="/">
+      <Image src={profile} alt="" width={28} height={28} densities={[1, 2]} />
+      {PROFILE.name}
+    </a>
+    <nav class="tabs" aria-label="Main">
+      {NAV_ITEMS.map((item) => (
+        <a href={item.href} aria-current={item.id === active ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <button
+      class="search"
+      type="button"
+      data-search-open
+      aria-label="Search apps, libraries and posts"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        aria-hidden="true"
       >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          class="size-5 fill-none stroke-current"
-          stroke-width="2"
-        >
-          <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-    </div>
-    <div class="navbar-center">
-      <a class="btn btn-ghost text-xl font-normal" href="/">
-        Javi Aguilar 👨🏻‍💻
-      </a>
-    </div>
-    <div class="navbar-end"></div>
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.5-3.5"></path>
+      </svg>
+      <span>Search apps and libraries</span>
+      <kbd>⌘K</kbd>
+    </button>
+    <a class="editor" href="/editor/" aria-current={active === "editor" ? "page" : undefined}>
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m8 7-5 5 5 5M16 7l5 5-5 5"></path>
+      </svg>
+      <span class="full">Code editor</span>
+      <span class="short">Editor</span>
+    </a>
+    <ThemeToggle />
   </div>
 </header>
 
-<dialog
-  id="site-drawer"
-  class="m-0 h-dvh max-h-dvh w-[19rem] max-w-[calc(100vw-2rem)] bg-base-200 p-0 backdrop:bg-black/55 lg:hidden"
->
-  <div class="relative h-full">
-    <button
-      type="button"
-      class="btn btn-circle btn-ghost absolute right-2 top-2 z-10"
-      aria-label="Close navigation"
-      data-drawer-close
-    >
-      <span aria-hidden="true" class="text-2xl">
-        ×
-      </span>
-    </button>
-    <SidebarContent activeItem={activeItem} />
-  </div>
-</dialog>
-
-<script>
-  const drawerState = window as Window & {
-    __siteDrawerReady?: boolean;
-    __siteDrawerOpener?: HTMLElement;
-  };
-
-  if (!drawerState.__siteDrawerReady) {
-    drawerState.__siteDrawerReady = true;
-
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-
-      const openButton = target.closest<HTMLElement>("[data-drawer-open]");
-      const closeButton = target.closest<HTMLElement>("[data-drawer-close]");
-      const drawer = document.querySelector<HTMLDialogElement>("#site-drawer");
-
-      if (openButton && drawer) {
-        drawerState.__siteDrawerOpener = openButton;
-        openButton.setAttribute("aria-expanded", "true");
-        drawer.showModal();
-        drawer.querySelector<HTMLElement>("[data-drawer-close]")?.focus();
-      } else if (closeButton && drawer?.open) {
-        drawer.close();
-      } else if (target === drawer) {
-        drawer.close();
-      }
-    });
-
-    document.addEventListener(
-      "close",
-      (event) => {
-        if (!(event.target instanceof HTMLDialogElement) || event.target.id !== "site-drawer")
-          return;
-        drawerState.__siteDrawerOpener?.setAttribute("aria-expanded", "false");
-        drawerState.__siteDrawerOpener?.focus();
-      },
-      true,
-    );
+<style>
+  .top {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: color-mix(in oklab, var(--bg) 82%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--line);
   }
-</script>
+  .bar {
+    max-width: var(--page);
+    margin-inline: auto;
+    padding: 12px var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .me img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-left: 12px;
+  }
+  .tabs a {
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .tabs a:hover {
+    color: var(--ink);
+  }
+  .tabs a[aria-current="page"] {
+    background: var(--pill);
+    color: var(--ink);
+  }
+  .search {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 260px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--pill);
+    color: var(--muted);
+    font: 13.5px var(--sans);
+    cursor: pointer;
+    text-align: left;
+  }
+  .search kbd {
+    margin-left: auto;
+    font: 12px var(--sans);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 5px;
+    background: var(--surface);
+  }
+  /* The live code editor is the most visited page, so it stays in the header at every width. */
+  .editor {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: -12px;
+    padding: 6px 12px;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .editor:hover,
+  .editor[aria-current="page"] {
+    background: var(--accent-fill);
+    color: var(--on-accent);
+  }
+  .editor .short {
+    display: none;
+  }
+  .bar > :global(.theme) {
+    margin-left: -12px;
+  }
+  @media (max-width: 860px) {
+    .tabs,
+    .search {
+      display: none;
+    }
+    .editor {
+      margin-left: auto;
+    }
+    .editor .full {
+      display: none;
+    }
+    .editor .short {
+      display: inline;
+    }
+    .bar {
+      padding-block: 10px;
+    }
+  }
+</style>

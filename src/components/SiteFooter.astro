@@ -1,17 +1,62 @@
 ---
+import { SOCIAL_LINKS } from "../config";
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="mb-5 pt-10 text-center text-sm">
+<footer class="foot">
   <p>
-    &copy; {year} Javi Aguilar. Powered by{" "}
-    <a
-      href="https://astrofy-template.netlify.app/"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="font-bold"
-    >
+    © {year} Javi Aguilar · Berlin. Inspired by the{" "}
+    <a href="https://astrofy-template.netlify.app/" target="_blank" rel="noopener noreferrer">
       Astrofy Template ⚡️
     </a>
   </p>
+  <nav aria-label="Elsewhere">
+    <a href="/experiments/">Experiments</a>
+    <a href="/about/">About</a>
+    {SOCIAL_LINKS.map((link) => (
+      <a href={link.href} rel="me">
+        {link.label}
+      </a>
+    ))}
+    <a href="/rss.xml">RSS</a>
+    <a href="https://github.com/sponsors/itsjavi">Sponsor</a>
+  </nav>
 </footer>
+
+<style>
+  .foot {
+    max-width: var(--page);
+    margin: 48px auto 0;
+    padding: 24px var(--gutter) 32px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  p {
+    margin: 0;
+  }
+  p a {
+    font-weight: 600;
+  }
+  nav {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+  a:hover {
+    color: var(--ink);
+  }
+  @media (max-width: 860px) {
+    .foot {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    }
+    nav {
+      margin-left: 0;
+    }
+  }
+</style>
