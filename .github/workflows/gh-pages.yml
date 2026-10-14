@@ -9,6 +9,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  # Daily rebuild so new GitHub releases and npm versions show up without a commit
+  schedule:
+    - cron: "17 5 * * *"
+
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -46,6 +50,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        env:
+          # Raises the GitHub API rate limit for release lookups
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm astro telemetry disable
           pnpm build
