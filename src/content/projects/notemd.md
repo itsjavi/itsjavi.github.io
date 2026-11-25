@@ -14,7 +14,7 @@ screenshots:
   - notemd/voice-note.webp
 repo: itsjavi/notemd
 website: https://itsjavi.com/notemd/
-action: build
+action: download
 requires: macOS 26, Apple silicon
 license: MIT
 price: Free

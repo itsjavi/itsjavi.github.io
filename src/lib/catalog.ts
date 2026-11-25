@@ -40,10 +40,13 @@ export function getCatalog(): Promise<CatalogItem[]> {
   catalog ??= (async () => {
     const projects = await getCollection("projects", (p) => p.data.status === "active");
     const items = await Promise.all(
-      projects.map(async (p) => ({
-        ...p,
-        release: await getLatestRelease(p.data.repo, p.data.npm),
-      })),
+      projects.map(async (p) => {
+        const release = await getLatestRelease(p.data.repo, p.data.npm);
+        // A "build from source" project that starts publishing GitHub releases becomes downloadable.
+        const action =
+          p.data.action === "build" && release?.source === "github" ? "download" : p.data.action;
+        return { ...p, data: { ...p.data, action }, release };
+      }),
     );
     return items.sort(
       (a, b) => a.data.order - b.data.order || a.data.name.localeCompare(b.data.name),
