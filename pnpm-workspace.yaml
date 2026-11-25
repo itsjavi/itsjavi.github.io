@@ -1,4 +1,7 @@
 allowBuilds:
   esbuild: true
-minimumReleaseAgeExclude:
-  - eslint@10.11.0
+overrides:
+  # @astrojs/astro2tsx (via @astrojs/check) leaves @emnapi/runtime as an open peer, so pnpm picks the 2.0 beta,
+  # which crashes `astro check` next to @emnapi/core 1.x. Keep both on the stable line.
+  "@emnapi/core": ^1.11.3
+  "@emnapi/runtime": ^1.11.3
